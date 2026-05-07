@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ministério Templo Da Adoração</title>
+
+  <!-- Fonte moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginPage" class="login-container">
+  <div class="login-box">
+    <h1>Ministério Templo Da Adoração</h1>
+    <p class="subtitle">Acesso ao sistema</p>
+
+    <input id="email" type="email" placeholder="Digite seu email">
+    <input id="senha" type="password" placeholder="Digite sua senha">
+
+    <button onclick="login()">Entrar</button>
+
+    <span onclick="toggleRecovery()">Esqueci minha senha</span>
+  </div>
+</div>
+
+<!-- RECUPERAÇÃO -->
+<div id="recoveryPage" class="login-container hidden">
+  <div class="login-box">
+    <h2>Recuperar senha</h2>
+    <input id="recoveryEmail" placeholder="Digite seu email">
+    <button onclick="recover()">Enviar</button>
+    <span onclick="toggleRecovery()">Voltar</span>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+  <aside class="sidebar">
+    <h2>Templo</h2>
+    <button onclick="nav('dashboard')">Painel/button>
+    <button onclick="nav('membros')">Membros</button>
+    <button onclick="nav('eventos')">Eventos</button>
+    <button onclick="nav('avisos')">Avisos</button>
+    <button onclick="logout()">Sair</button>
+  </aside>
+
+  <main class="content">
+
+    <section id="dashboard">
+      <h1>Dashboard</h1>
+
+      <div class="cards">
+        <div class="card"><h3 id="totalMembros">0</h3><p>Membros</p></div>
+        <div class="card"><h3 id="totalEventos">0</h3><p>Eventos</p></div>
+        <div class="card"><h3 id="totalAvisos">0</h3><p>Avisos</p></div>
+      </div>
+    </section>
+
+    <section id="membros" class="hidden">
+      <h1>Membros</h1>
+
+      <input id="search" placeholder="Buscar membro..." oninput="renderMembros()">
+
+      <div class="form-card">
+        <input id="nome" placeholder="Nome">
+        <input id="funcao" placeholder="Função">
+        <button onclick="salvarMembro()">Salvar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Função</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaMembros"></tbody>
+      </table>
+    </section>
+
+    <section id="eventos" class="hidden">
+      <h1>Eventos</h1>
+
+      <div class="form-card">
+        <input id="eventoNome" placeholder="Nome do evento">
+        <input type="date" id="eventoData">
+        <button onclick="salvarEvento()">Salvar</button>
+      </div>
+
+      <ul id="listaEventos"></ul>
+    </section>
+
+    <section id="avisos" class="hidden">
+      <h1>Avisos</h1>
+
+      <div class="form-card">
+        <input id="avisoTexto" placeholder="Digite o aviso">
+        <button onclick="salvarAviso()">Publicar</button>
+      </div>
+
+      <ul id="listaAvisos"></ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
