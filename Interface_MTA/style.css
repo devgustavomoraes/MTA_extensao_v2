@@ -26,7 +26,7 @@ body { background: var(--bg); color: var(--text); }
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0e1929 0%, #155294 100%);
+    background: linear-gradient(135deg, #0e1929 0%, #0d3e72 100%);
     padding: 1rem;
 }
 
@@ -42,7 +42,6 @@ body { background: var(--bg); color: var(--text); }
 
 .auth-card h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 4px; }
 .auth-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
-
 .logo-box {
     background: var(--primary);
     color: white;
@@ -69,14 +68,11 @@ input, select, textarea {
     background: var(--surface);
     transition: border-color 0.2s;
 }
-
 input:focus, select:focus, textarea:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(43,108,176,0.1);
 }
-
 textarea { resize: vertical; }
-
 .field-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block; }
 
 .btn-main {
@@ -122,6 +118,7 @@ textarea { resize: vertical; }
     position: sticky;
     top: 0;
     z-index: 10;
+
 }
 
 .user-profile { display: flex; align-items: center; gap: 10px; }
@@ -148,19 +145,16 @@ textarea { resize: vertical; }
     transition: all 0.2s;
 }
 .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
-
 .content-view { padding: 1.5rem; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
 
-/* ========== PAGE STRUCTURE ========== */
+/* PAGE STRUCTURE */
 .page-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--primary); }
-
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
-
 .section-label {
     font-size: 0.8rem;
     font-weight: 600;
@@ -169,10 +163,9 @@ textarea { resize: vertical; }
     color: var(--text-muted);
     margin: 1.5rem 0 0.75rem;
 }
+/* Painiel de Controle */
 
-/* ========== DASHBOARD ========== */
 .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
-
 .stat-card {
     background: var(--surface);
     padding: 1rem 0.75rem;
@@ -183,7 +176,6 @@ textarea { resize: vertical; }
 }
 .stat-card strong { font-size: 1.8rem; display: block; color: var(--primary); font-weight: 700; line-height: 1; }
 .stat-card p { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
-
 .action-btn {
     background: var(--surface);
     padding: 1rem;
@@ -200,10 +192,9 @@ textarea { resize: vertical; }
 }
 .action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 .action-icon { font-size: 1.2rem; color: var(--accent); font-weight: 600; }
+/* LISTAS */
 
-/* ========== LISTAS ========== */
 .lista-cards { display: flex; flex-direction: column; gap: 10px; }
-
 .empty-state {
     text-align: center;
     color: var(--text-muted);
@@ -213,7 +204,6 @@ textarea { resize: vertical; }
     border-radius: var(--radius);
     border: 1px dashed var(--border);
 }
-
 /* Card de Membro */
 .membro-card {
     background: var(--surface);
@@ -291,17 +281,16 @@ textarea { resize: vertical; }
 .aviso-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
 .aviso-card .aviso-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
 .aviso-card .aviso-data { font-size: 0.7rem; color: var(--text-muted); }
-
 .tag { font-size: 0.65rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
 .tag-urgente { background: #fff5f5; color: var(--danger); }
 .tag-info { background: #f0fff4; color: var(--success); }
 .tag-normal { background: var(--accent-light); color: var(--accent); }
 
-/* ========== BUSCA ========== */
+/* BUSCA */
 .search-box { margin-bottom: 1rem; }
 .search-box input { padding: 10px 14px; background: var(--surface); }
 
-/* ========== BOTÃO ADICIONAR ========== */
+/*  BOTÃO ADICIONAR */
 .btn-add {
     background: var(--primary);
     color: white;
@@ -315,7 +304,7 @@ textarea { resize: vertical; }
 }
 .btn-add:hover { background: #2a4a7f; }
 
-/* ========== TAB BAR ========== */
+/*  TAB BAR  */
 .tab-bar {
     position: fixed;
     bottom: 0;
@@ -329,13 +318,12 @@ textarea { resize: vertical; }
     box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
     z-index: 10;
 }
-
 .tab-item { background: none; border: none; text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; padding: 0; transition: color 0.2s; }
 .tab-item i { display: block; font-style: normal; font-size: 1.2rem; margin-bottom: 2px; }
 .tab-item span { font-size: 0.68rem; }
 .tab-item.active { color: var(--primary); font-weight: 600; }
 
-/* ========== MODAIS ========== */
+/*  MODAIS  */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -346,7 +334,6 @@ textarea { resize: vertical; }
     z-index: 100;
     backdrop-filter: blur(2px);
 }
-
 .modal-card {
     background: var(--surface);
     border-radius: 20px 20px 0 0;
@@ -357,12 +344,10 @@ textarea { resize: vertical; }
     overflow-y: auto;
     animation: slideUp 0.25s ease;
 }
-
 @keyframes slideUp {
     from { transform: translateY(100%); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
-
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -370,7 +355,6 @@ textarea { resize: vertical; }
     margin-bottom: 1.25rem;
 }
 .modal-header h4 { font-size: 1rem; font-weight: 700; color: var(--primary); }
-
 .modal-close {
     background: var(--bg);
     border: none;
@@ -384,8 +368,7 @@ textarea { resize: vertical; }
     align-items: center;
     justify-content: center;
 }
-
-/* ========== TOAST ========== */
+/* TOAST  */
 .toast {
     position: fixed;
     bottom: 80px;
@@ -401,13 +384,13 @@ textarea { resize: vertical; }
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     animation: fadeInOut 3s forwards;
 }
-
 @keyframes fadeInOut {
     0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
     10% { opacity: 1; transform: translateX(-50%) translateY(0); }
     80% { opacity: 1; }
     100% { opacity: 0; }
 }
+
 /* Ajustes para o calendário caber na tela mobile */
 #calendar {
     max-height: 70vh;
