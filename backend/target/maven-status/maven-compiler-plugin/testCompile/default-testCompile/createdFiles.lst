@@ -1,0 +1,10 @@
+com\projetomta\service\MembroServiceTest.class
+com\projetomta\support\TestDatabaseCleaner.class
+com\projetomta\repository\MembroRepositoryIntegrationTest.class
+com\projetomta\controller\AgendaControllerIntegrationTest.class
+com\projetomta\controller\AuthControllerIntegrationTest.class
+com\projetomta\service\EventoServiceTest.class
+com\projetomta\exception\GlobalExceptionHandlerTest.class
+com\projetomta\support\TestAuthHelper.class
+com\projetomta\controller\MembroControllerIntegrationTest.class
+com\projetomta\ProjetoMtaApplicationTests.class

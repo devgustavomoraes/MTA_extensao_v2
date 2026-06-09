@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.projetomta.service.EventoServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.234 s -- in com.projetomta.service.EventoServiceTest

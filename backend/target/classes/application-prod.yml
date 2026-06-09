@@ -1,0 +1,17 @@
+# Perfil de produção — Render + TiDB Cloud
+# Ative com: SPRING_PROFILES_ACTIVE=prod
+
+spring:
+  main:
+    # Reduz tempo de boot no cold start do Render
+    lazy-initialization: true
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:5}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+
+logging:
+  level:
+    root: WARN
+    com.projetomta: INFO
+    com.zaxxer.hikari: WARN
