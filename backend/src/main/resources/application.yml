@@ -4,9 +4,9 @@ spring:
   application:
     name: projeto-mta
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:projeto_mta}?useSSL=${DB_SSL_ENABLED:false}&requireSSL=${DB_SSL_ENABLED:false}&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=30000
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
+    url: jdbc:mysql://${DB_HOST:gateway01.us-east-1.prod.aws.tidbcloud.com}:${DB_PORT:4000}/${DB_NAME:projeto_mta}?sslMode=VERIFY_IDENTITY&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=30000
+    username: ${DB_USERNAME:3sWEwpxa2TYs1mn.root}
+    password: ${DB_PASSWORD:f6R5QIaYrHALBO2c}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: projeto-mta-pool
@@ -21,13 +21,15 @@ spring:
       connection-test-query: SELECT 1
   jpa:
     hibernate:
-      ddl-auto: validate
-    show-sql: false
+      # 'update' ativo para criar todas as 5 tabelas no cluster novo automaticamente
+      ddl-auto: update
+    # Ativado ver os logs de criação de tabela passando no console do IntelliJ
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
         jdbc:
           time_zone: UTC
 
@@ -62,5 +64,6 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
   seed:
-    admin-email: ${SEED_ADMIN_EMAIL:}
-    admin-password: ${SEED_ADMIN_PASSWORD:}
+    # Gera automaticamente o login do administrador no primeiro boot do banco
+    admin-email: ${SEED_ADMIN_EMAIL:admin@mta.org}
+    admin-password: ${SEED_ADMIN_PASSWORD:AdminMTA2026!}
