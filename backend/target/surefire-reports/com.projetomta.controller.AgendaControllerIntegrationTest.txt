@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.projetomta.controller.AgendaControllerIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.209 s -- in com.projetomta.controller.AgendaControllerIntegrationTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.486 s -- in com.projetomta.controller.AgendaControllerIntegrationTest

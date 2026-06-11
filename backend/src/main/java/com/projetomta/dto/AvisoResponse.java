@@ -18,4 +18,5 @@ public class AvisoResponse {
     private Long publicadoPorId;
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
+    private LocalDateTime dataExpiracao;
 }

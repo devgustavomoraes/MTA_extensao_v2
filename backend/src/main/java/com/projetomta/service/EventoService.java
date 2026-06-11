@@ -27,18 +27,32 @@ public class EventoService {
     private final UsuarioRepository usuarioRepository;
 
     @Transactional(readOnly = true)
-    public Page<EventoResponse> listar(LocalDateTime inicio, LocalDateTime fim, Pageable pageable) {
-        Page<Evento> pagina = (inicio != null && fim != null)
-                ? eventoRepository.findByDataInicioBetween(inicio, fim, pageable)
-                : eventoRepository.findAll(pageable);
+    public Page<EventoResponse> listar(
+            LocalDateTime inicio,
+            LocalDateTime fim,
+            boolean incluirEncerrados,
+            Pageable pageable
+    ) {
+        LocalDateTime agora = LocalDateTime.now();
+        boolean adminComHistorico = incluirEncerrados && SecurityUtils.isAdminAutenticado();
+
+        Page<Evento> pagina;
+        if (adminComHistorico) {
+            pagina = (inicio != null && fim != null)
+                    ? eventoRepository.findByDataInicioBetween(inicio, fim, pageable)
+                    : eventoRepository.findAll(pageable);
+        } else {
+            pagina = eventoRepository.findByDataFimGreaterThanEqualOrderByDataInicioAsc(agora, pageable);
+        }
 
         return pagina.map(this::paraResponse);
     }
 
     @Transactional(readOnly = true)
     public List<EventoResponse> listarProximos() {
+        LocalDateTime agora = LocalDateTime.now();
         return eventoRepository
-                .findTop10ByDataInicioGreaterThanEqualOrderByDataInicioAsc(LocalDateTime.now())
+                .findTop10ByDataFimGreaterThanEqualOrderByDataInicioAsc(agora)
                 .stream()
                 .map(this::paraResponse)
                 .toList();
@@ -103,7 +117,7 @@ public class EventoService {
     }
 
     private void validarConflitoHorario(LocalDateTime inicio, LocalDateTime fim, Long excludeId) {
-        if (eventoRepository.existsConflitoHorario(inicio, fim, excludeId)) {
+        if (eventoRepository.existsConflitoHorario(inicio, fim, excludeId, LocalDateTime.now())) {
             throw new ConflitoHorarioException(
                     "Já existe um evento agendado neste horário. Escolha outro período."
             );

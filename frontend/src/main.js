@@ -1,5 +1,3 @@
-import './styles/tokens.css';
-import './styles/main.css';
 import { carregarTema, aplicarTema } from './config/theme.js';
 import { registerSW } from 'virtual:pwa-register';
 import './js/app.js';

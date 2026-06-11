@@ -27,6 +27,17 @@ export function construirDateTime(data, hora, horaPadrao = '09:00') {
   return `${data}T${h.length === 5 ? h : horaPadrao}:00`;
 }
 
+export function extrairDataLocal(isoString) {
+  if (!isoString) return '';
+  return String(isoString).slice(0, 10);
+}
+
+export function extrairHoraLocal(isoString) {
+  if (!isoString) return '';
+  const match = String(isoString).match(/T(\d{2}:\d{2})/);
+  return match ? match[1] : '';
+}
+
 export function labelPrioridade(prioridade) {
   const mapa = {
     NORMAL: 'Normal',

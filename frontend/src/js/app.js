@@ -10,6 +10,7 @@ import {
   listarEventos,
   listarProximosEventos,
   criarEvento,
+  atualizarEvento,
   excluirEvento as excluirEventoApi,
   listarEscalas,
   associarEscala,
@@ -30,17 +31,29 @@ import {
   formatarData,
   formatarHora,
   construirDateTime,
+  extrairDataLocal,
+  extrairHoraLocal,
   labelPrioridade,
   prioridadeParaApi,
   classePrioridade
 } from '../utils/format.js';
 import { definirCarregamento, definirCarregamentoApp } from '../utils/loading.js';
+import {
+  eventoEncerrado,
+  avisoExpirado,
+  contarEventosAtivos,
+  contarAvisosAtivos,
+  ordenarEventosAdmin,
+  ordenarAvisosAdmin
+} from '../utils/expiracao.js';
 
 let userRole = 'visitor';
 let calendar;
 let buscaMembrosTimer;
 let eventoSelecionadoId = null;
+let eventoEmEdicaoId = null;
 let membrosParaEscala = [];
+let membrosParaEvento = [];
 
 const state = {
   membros: [],
@@ -191,6 +204,8 @@ async function iniciarApp() {
   atualizarDashboard();
   renderizarEventos();
   renderizarAvisos();
+
+  setInterval(atualizarDadosExpiracao, 60000);
 }
 
 function configurarAcesso() {
@@ -212,6 +227,8 @@ function configurarAcesso() {
     el.classList.toggle('hidden', !admin);
   });
 
+  document.getElementById('statGrid')?.classList.toggle('visitor-stats', !admin);
+
   const autenticado = sessaoAtiva();
   document.getElementById('btnEntrar').classList.toggle('hidden', autenticado);
   document.getElementById('btnLogout').classList.toggle('hidden', !autenticado);
@@ -219,7 +236,7 @@ function configurarAcesso() {
 
 async function carregarAgenda() {
   const [pagina, proximos] = await Promise.all([
-    listarEventos({ page: 0, size: 100 }),
+    listarEventos({ page: 0, size: 100, incluirEncerrados: isAdmin() }),
     listarProximosEventos()
   ]);
 
@@ -229,8 +246,19 @@ async function carregarAgenda() {
 }
 
 async function carregarAvisos() {
-  const pagina = await listarAvisos({ page: 0, size: 50 });
+  const pagina = await listarAvisos({ page: 0, size: 50, incluirExpirados: isAdmin() });
   state.avisos = pagina.content || [];
+}
+
+async function atualizarDadosExpiracao() {
+  try {
+    await Promise.all([carregarAgenda(), carregarAvisos()]);
+    atualizarDashboard();
+    renderizarEventos();
+    renderizarAvisos();
+  } catch {
+    /* silencioso — próxima tentativa em 1 min */
+  }
 }
 
 function inicializarCalendario() {
@@ -250,28 +278,34 @@ function inicializarCalendario() {
     },
     buttonText: { today: 'Hoje', month: 'Mês', week: 'Semana' },
     height: 'auto',
-    events: state.eventos.map((ev) => ({
-      title: ev.titulo,
-      start: ev.dataInicio,
-      end: ev.dataFim,
-      backgroundColor: '#1a365d'
-    }))
+    events: eventosParaCalendario()
   });
 
   calendar.render();
 }
 
+function eventosParaCalendario() {
+  const fonte = isAdmin()
+    ? state.eventos
+    : state.eventos.filter((ev) => !eventoEncerrado(ev));
+
+  return fonte.map((ev) => {
+    const encerrado = eventoEncerrado(ev);
+    return {
+      title: encerrado ? `${ev.titulo} (realizado)` : ev.titulo,
+      start: ev.dataInicio,
+      end: ev.dataFim,
+      backgroundColor: encerrado ? '#94a3b8' : '#1a365d',
+      borderColor: encerrado ? '#64748b' : '#1a365d',
+      classNames: encerrado ? ['fc-evento-encerrado'] : []
+    };
+  });
+}
+
 function atualizarCalendario() {
   if (!calendar) return;
   calendar.removeAllEvents();
-  state.eventos.forEach((ev) => {
-    calendar.addEvent({
-      title: ev.titulo,
-      start: ev.dataInicio,
-      end: ev.dataFim,
-      backgroundColor: '#1a365d'
-    });
-  });
+  eventosParaCalendario().forEach((ev) => calendar.addEvent(ev));
 }
 
 async function logout() {
@@ -342,10 +376,11 @@ function nav(pageId) {
 }
 
 function atualizarDashboard() {
-  const totalMembros = isAdmin() ? membrosPagina.totalElements : '—';
-  document.getElementById('statMembros').innerText = totalMembros;
-  document.getElementById('statEventos').innerText = state.eventos.length;
-  document.getElementById('statAvisos').innerText = state.avisos.length;
+  if (isAdmin()) {
+    document.getElementById('statMembros').innerText = membrosPagina.totalElements;
+  }
+  document.getElementById('statEventos').innerText = contarEventosAtivos(state.eventos);
+  document.getElementById('statAvisos').innerText = contarAvisosAtivos(state.avisos);
 
   const container = document.getElementById('listaEventosDash');
   const proximos = state.proximosEventos.slice(0, 3);
@@ -355,15 +390,41 @@ function atualizarDashboard() {
     return;
   }
 
-  container.innerHTML = proximos.map((ev) => `
-    <div class="evento-card" style="margin-bottom:8px">
+  container.innerHTML = proximos
+    .map((ev) => montarHtmlEventoCard(ev, { compacto: true }))
+    .join('');
+}
+
+function montarHtmlEventoCard(ev, { compacto = false } = {}) {
+  const encerrado = eventoEncerrado(ev);
+  const horario = `${formatarHora(ev.dataInicio)} — ${formatarHora(ev.dataFim)}`;
+  const dataLabel = compacto ? formatarDataHora(ev.dataInicio) : formatarData(ev.dataInicio);
+
+  return `
+    <div class="evento-card${compacto ? ' evento-card-compacto' : ''}${encerrado ? ' evento-encerrado' : ''}" style="${compacto ? 'margin-bottom:8px' : ''}">
+      ${encerrado && !compacto ? '<span class="item-badge-encerrado">Realizado</span>' : ''}
       <div class="evento-header">
         <strong>${escapeHtml(ev.titulo)}</strong>
-        <span class="evento-data">${formatarDataHora(ev.dataInicio)}</span>
+        <span class="evento-data">${dataLabel}</span>
       </div>
+      <div class="evento-local">🕐 ${horario}</div>
       ${ev.local ? `<div class="evento-local">📍 ${escapeHtml(ev.local)}</div>` : ''}
+      ${ev.descricao ? `<div class="evento-desc">${escapeHtml(ev.descricao)}</div>` : ''}
+      ${compacto ? '' : `
+        <div id="escala-resumo-${ev.id}" class="escala-inline hidden"></div>
+        <div class="evento-acoes">
+          ${(!encerrado || isAdmin()) ? `<button type="button" class="btn-texto" data-ver-escala="${ev.id}" title="Veja quem foi escalado">👥 Ver equipe</button>` : ''}
+          ${isAdmin() ? `
+            <div class="evento-admin-acoes">
+              <button type="button" class="btn-texto" data-editar-evento="${ev.id}" title="Alterar ou reaproveitar em nova data">✏️ Editar</button>
+              ${!encerrado ? `<button type="button" class="btn-texto" data-gerenciar-escala="${ev.id}" title="Gerenciar equipe">Gerenciar equipe</button>` : ''}
+              <button type="button" class="btn-texto btn-texto-danger" data-excluir-evento="${ev.id}" title="Remover">🗑 Excluir</button>
+            </div>
+          ` : ''}
+        </div>
+      `}
     </div>
-  `).join('');
+  `;
 }
 
 async function carregarMembros(opcoes = {}) {
@@ -478,6 +539,107 @@ function filtrarMembros() {
   }, 350);
 }
 
+async function carregarMembrosParaEvento() {
+  const pagina = await listarMembros({ page: 0, size: 200 });
+  membrosParaEvento = (pagina.content || []).filter((m) => m.ativo !== false);
+}
+
+function opcoesMembrosHtml(selecionado = '') {
+  const opts = membrosParaEvento
+    .map((m) => `<option value="${m.id}"${String(m.id) === String(selecionado) ? ' selected' : ''}>${escapeHtml(m.nomeCompleto)}</option>`)
+    .join('');
+  return `<option value="">Selecione um membro...</option>${opts}`;
+}
+
+function adicionarLinhaEquipeEvento(membroId = '', funcao = '') {
+  const container = document.getElementById('eventoEquipeRows');
+  if (!container) return;
+
+  const row = document.createElement('div');
+  row.className = 'equipe-row';
+  row.innerHTML = `
+    <select class="equipe-membro" title="Membro da equipe">${opcoesMembrosHtml(membroId)}</select>
+    <input type="text" class="equipe-funcao" placeholder="Função (ex: Músico)" value="${escapeHtml(funcao)}" title="Função neste evento">
+    <button type="button" class="btn-icon equipe-remover" title="Remover da lista">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function limparEquipeEventoForm() {
+  const container = document.getElementById('eventoEquipeRows');
+  if (container) container.innerHTML = '';
+}
+
+function obterEquipeDoFormularioEvento() {
+  const rows = document.querySelectorAll('#eventoEquipeRows .equipe-row');
+  const equipe = [];
+  const usados = new Set();
+
+  rows.forEach((row) => {
+    const membroId = row.querySelector('.equipe-membro')?.value;
+    const funcao = row.querySelector('.equipe-funcao')?.value.trim();
+    if (!membroId || usados.has(membroId)) return;
+    usados.add(membroId);
+    equipe.push({ membroId: Number(membroId), funcaoEscala: funcao || null });
+  });
+
+  return equipe;
+}
+
+async function salvarEscalasDoEvento(eventoId, equipe) {
+  for (const item of equipe) {
+    await associarEscala(eventoId, item);
+  }
+}
+
+async function abrirModalEventoNovo() {
+  eventoEmEdicaoId = null;
+  document.getElementById('modalEventoTitulo').textContent = 'Novo Evento';
+  document.getElementById('btnSalvarEvento').textContent = 'Salvar Evento';
+  limparFormulario('modalEvento');
+  limparEquipeEventoForm();
+  if (isAdmin()) {
+    await carregarMembrosParaEvento();
+    adicionarLinhaEquipeEvento();
+  }
+  abrirModal('modalEvento');
+}
+
+async function abrirModalEventoEditar(id) {
+  const evento = state.eventos.find((e) => e.id === id);
+  if (!evento) {
+    mostrarToast('Evento não encontrado.');
+    return;
+  }
+
+  eventoEmEdicaoId = id;
+  document.getElementById('modalEventoTitulo').textContent = 'Editar Evento';
+  document.getElementById('btnSalvarEvento').textContent = 'Salvar alterações';
+  document.getElementById('eventoTitulo').value = evento.titulo || '';
+  document.getElementById('eventoData').value = extrairDataLocal(evento.dataInicio);
+  document.getElementById('eventoHora').value = extrairHoraLocal(evento.dataInicio);
+  document.getElementById('eventoHoraFim').value = extrairHoraLocal(evento.dataFim);
+  document.getElementById('eventoLocal').value = evento.local || '';
+  document.getElementById('eventoDesc').value = evento.descricao || '';
+  limparEquipeEventoForm();
+
+  if (isAdmin()) {
+    await carregarMembrosParaEvento();
+    try {
+      const escalas = await listarEscalas(id);
+      if (escalas.length > 0) {
+        escalas.forEach((e) => adicionarLinhaEquipeEvento(String(e.membroId), e.funcaoEscala || ''));
+      } else {
+        adicionarLinhaEquipeEvento();
+      }
+    } catch {
+      adicionarLinhaEquipeEvento();
+    }
+  }
+
+  abrirModal('modalEvento');
+}
+
 async function salvarEvento() {
   const titulo = document.getElementById('eventoTitulo').value.trim();
   const data = document.getElementById('eventoData').value;
@@ -499,23 +661,61 @@ async function salvarEvento() {
     return;
   }
 
+  const payload = {
+    titulo,
+    descricao: descricao || null,
+    dataInicio,
+    dataFim,
+    local: local || null
+  };
+
   const btn = document.getElementById('btnSalvarEvento');
   btn.disabled = true;
   btn.classList.add('is-loading-btn');
 
+  const editando = Boolean(eventoEmEdicaoId);
+
   try {
-    await criarEvento({ titulo, descricao: descricao || null, dataInicio, dataFim, local: local || null });
+    let eventoId = eventoEmEdicaoId;
+
+    if (editando) {
+      await atualizarEvento(eventoEmEdicaoId, payload);
+      delete state.escalasCache[eventoEmEdicaoId];
+    } else {
+      const criado = await criarEvento(payload);
+      eventoId = criado.id;
+    }
+
+    if (isAdmin() && eventoId) {
+      const equipe = obterEquipeDoFormularioEvento();
+      if (equipe.length > 0) {
+        if (editando) {
+          const existentes = await listarEscalas(eventoId);
+          const idsExistentes = new Set(existentes.map((e) => e.membroId));
+          const novos = equipe.filter((e) => !idsExistentes.has(e.membroId));
+          await salvarEscalasDoEvento(eventoId, novos);
+        } else {
+          await salvarEscalasDoEvento(eventoId, equipe);
+        }
+        delete state.escalasCache[eventoId];
+      }
+    }
+
     fecharModal('modalEvento');
     limparFormulario('modalEvento');
-    mostrarToast('Evento agendado com sucesso!');
+    limparEquipeEventoForm();
+    eventoEmEdicaoId = null;
+    mostrarToast(editando ? 'Evento atualizado!' : 'Evento agendado com sucesso!');
     await carregarAgenda();
     atualizarDashboard();
     renderizarEventos();
   } catch (error) {
     if (error instanceof ApiError && error.erro === 'CONFLITO_HORARIO') {
-      mostrarToast('Já existe outro evento neste horário. Escolha outro período.');
+      mostrarToast(editando
+        ? 'Conflito de horário. Verifique o período ou a equipe escalada.'
+        : 'Já existe outro evento neste horário. Escolha outro período.');
     } else {
-      mostrarToast(tratarErroApi(error, 'Não foi possível agendar o evento.'));
+      mostrarToast(tratarErroApi(error, 'Não foi possível salvar o evento.'));
     }
   } finally {
     btn.disabled = false;
@@ -541,30 +741,27 @@ function renderizarEventos() {
   const container = document.getElementById('listaEventos');
   if (!container) return;
 
-  if (state.eventos.length === 0) {
+  const eventosVisiveis = isAdmin()
+    ? ordenarEventosAdmin(state.eventos)
+    : state.eventos.filter((e) => !eventoEncerrado(e));
+
+  if (eventosVisiveis.length === 0) {
     container.innerHTML = '<div class="empty-state">Nenhum evento agendado. Volte em breve!</div>';
     return;
   }
 
-  container.innerHTML = state.eventos.map((ev) => `
-    <div class="evento-card">
-      <div class="evento-header">
-        <strong>${escapeHtml(ev.titulo)}</strong>
-        <span class="evento-data">${formatarData(ev.dataInicio)}</span>
-      </div>
-      <div class="evento-local">🕐 ${formatarHora(ev.dataInicio)} — ${formatarHora(ev.dataFim)}</div>
-      ${ev.local ? `<div class="evento-local">📍 ${escapeHtml(ev.local)}</div>` : ''}
-      ${ev.descricao ? `<div class="evento-desc">${escapeHtml(ev.descricao)}</div>` : ''}
-      <div id="escala-resumo-${ev.id}" class="escala-inline hidden"></div>
-      <div class="evento-acoes">
-        <button type="button" class="btn-texto" data-ver-escala="${ev.id}" title="Veja quem foi escalado para este evento">👥 Ver equipe</button>
-        ${isAdmin() ? `
-          <button type="button" class="btn-texto" data-gerenciar-escala="${ev.id}" title="Adicionar ou remover pessoas da equipe">Gerenciar equipe</button>
-          <button type="button" class="btn-icon" data-excluir-evento="${ev.id}" title="Remover este evento">🗑</button>
-        ` : ''}
-      </div>
-    </div>
-  `).join('');
+  if (isAdmin()) {
+    const ativos = eventosVisiveis.filter((e) => !eventoEncerrado(e));
+    const encerrados = eventosVisiveis.filter((e) => eventoEncerrado(e));
+    let html = ativos.map((ev) => montarHtmlEventoCard(ev)).join('');
+    if (encerrados.length > 0) {
+      html += '<h4 class="section-label section-encerrados">Eventos já realizados</h4>';
+      html += encerrados.map((ev) => montarHtmlEventoCard(ev)).join('');
+    }
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = eventosVisiveis.map((ev) => montarHtmlEventoCard(ev)).join('');
+  }
 }
 
 async function carregarEscalasResumo(eventoId) {
@@ -693,9 +890,22 @@ async function salvarAviso() {
   const titulo = document.getElementById('avisoTitulo').value.trim();
   const mensagem = document.getElementById('avisoMensagem').value.trim();
   const prioridade = prioridadeParaApi(document.getElementById('avisoPrioridade').value);
+  const dataExp = document.getElementById('avisoDataExp').value;
+  const horaExp = document.getElementById('avisoHoraExp').value;
 
   if (!titulo || !mensagem) {
     mostrarToast('Preencha título e mensagem do comunicado.');
+    return;
+  }
+
+  if (!dataExp || !horaExp) {
+    mostrarToast('Informe data e horário de término do comunicado.');
+    return;
+  }
+
+  const dataExpiracao = construirDateTime(dataExp, horaExp);
+  if (new Date(dataExpiracao) <= new Date()) {
+    mostrarToast('A data de término deve ser no futuro.');
     return;
   }
 
@@ -704,7 +914,7 @@ async function salvarAviso() {
   btn.classList.add('is-loading-btn');
 
   try {
-    await criarAviso({ titulo, mensagem, prioridade });
+    await criarAviso({ titulo, mensagem, prioridade, dataExpiracao });
     fecharModal('modalAviso');
     limparFormulario('modalAviso');
     mostrarToast('Comunicado publicado!');
@@ -734,24 +944,52 @@ async function excluirAviso(id) {
 
 function renderizarAvisos() {
   const container = document.getElementById('listaAvisos');
-  if (state.avisos.length === 0) {
+  const avisosVisiveis = isAdmin()
+    ? ordenarAvisosAdmin(state.avisos)
+    : state.avisos.filter((a) => !avisoExpirado(a));
+
+  if (avisosVisiveis.length === 0) {
     container.innerHTML = '<div class="empty-state">Nenhum comunicado no momento.</div>';
     return;
   }
 
-  container.innerHTML = state.avisos.map((av) => `
-    <div class="aviso-card">
+  const renderCard = (av) => {
+    const expirado = avisoExpirado(av);
+    return `
+    <div class="aviso-card${expirado ? ' aviso-expirado' : ''}">
+      ${expirado && isAdmin() ? '<span class="item-badge-encerrado">Expirado</span>' : ''}
       <div class="aviso-header">
         <strong>${escapeHtml(av.titulo)}</strong>
         <span class="tag tag-${classePrioridade(av.prioridade)}">${labelPrioridade(av.prioridade)}</span>
       </div>
       <p>${escapeHtml(av.mensagem)}</p>
       <div class="aviso-footer">
-        <span class="aviso-data">${formatarData(av.criadoEm)}</span>
+        <span class="aviso-data">${av.dataExpiracao ? `Até ${formatarDataHora(av.dataExpiracao)}` : formatarData(av.criadoEm)}</span>
         ${isAdmin() ? `<button type="button" class="btn-icon" data-excluir-aviso="${av.id}" title="Remover comunicado">🗑</button>` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  };
+
+  if (isAdmin()) {
+    const vigentes = avisosVisiveis.filter((a) => !avisoExpirado(a));
+    const expirados = avisosVisiveis.filter((a) => avisoExpirado(a));
+    let html = vigentes.map(renderCard).join('');
+    if (expirados.length > 0) {
+      html += '<h4 class="section-label section-encerrados">Comunicados expirados</h4>';
+      html += expirados.map(renderCard).join('');
+    }
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = avisosVisiveis.map(renderCard).join('');
+  }
+}
+
+function definirExpiracaoPadraoAviso() {
+  const alvo = new Date();
+  alvo.setDate(alvo.getDate() + 7);
+  document.getElementById('avisoDataExp').value = alvo.toISOString().slice(0, 10);
+  document.getElementById('avisoHoraExp').value = '23:59';
 }
 
 function abrirModal(id) {
@@ -760,6 +998,10 @@ function abrirModal(id) {
 
 function fecharModal(id) {
   document.getElementById(id).classList.add('hidden');
+  if (id === 'modalEvento') {
+    eventoEmEdicaoId = null;
+    limparEquipeEventoForm();
+  }
 }
 
 function fecharModalFora(event, id) {
@@ -814,6 +1056,11 @@ function registrarEventos() {
   document.getElementById('btnAbrirRecuperacao').addEventListener('click', () => abrirModal('modalRecuperacao'));
   document.getElementById('btnEnviarRecuperacao').addEventListener('click', enviarRecuperacaoSenha);
   document.getElementById('btnAdicionarEscala').addEventListener('click', adicionarMembroEscala);
+  document.getElementById('btnAddEquipeRow')?.addEventListener('click', () => adicionarLinhaEquipeEvento());
+  document.getElementById('eventoEquipeRows')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.equipe-remover');
+    if (btn) btn.closest('.equipe-row')?.remove();
+  });
 
   document.getElementById('btnMembrosAnterior').addEventListener('click', () => {
     if (membrosPagina.page > 0) {
@@ -832,7 +1079,17 @@ function registrarEventos() {
     btn.addEventListener('click', () => nav(btn.dataset.page));
   });
   document.querySelectorAll('[data-modal]').forEach((btn) => {
-    btn.addEventListener('click', () => abrirModal(btn.dataset.modal));
+    btn.addEventListener('click', () => {
+      if (btn.dataset.modal === 'modalEvento') {
+        abrirModalEventoNovo();
+      } else if (btn.dataset.modal === 'modalAviso') {
+        limparFormulario('modalAviso');
+        definirExpiracaoPadraoAviso();
+        abrirModal('modalAviso');
+      } else {
+        abrirModal(btn.dataset.modal);
+      }
+    });
   });
   document.querySelectorAll('[data-close]').forEach((btn) => {
     btn.addEventListener('click', () => fecharModal(btn.dataset.close));
@@ -849,6 +1106,9 @@ function registrarEventos() {
   document.getElementById('listaEventos').addEventListener('click', (e) => {
     if (e.target.closest('[data-excluir-evento]')) {
       excluirEvento(Number(e.target.closest('[data-excluir-evento]').dataset.excluirEvento));
+    }
+    if (e.target.closest('[data-editar-evento]')) {
+      abrirModalEventoEditar(Number(e.target.closest('[data-editar-evento]').dataset.editarEvento));
     }
     if (e.target.closest('[data-ver-escala]')) {
       mostrarEscalasInline(Number(e.target.closest('[data-ver-escala]').dataset.verEscala));

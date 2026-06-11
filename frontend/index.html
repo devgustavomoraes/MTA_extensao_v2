@@ -14,6 +14,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/styles/tokens.css">
+    <link rel="stylesheet" href="./src/styles/main.css">
     <title>MTA - Ministério Templo Da Adoração</title>
 </head>
 <body>
@@ -45,9 +47,9 @@
             <!-- Dashboard -->
             <section id="dashboard" class="page" aria-label="Painel inicial">
                 <h3 class="page-title">Início</h3>
-                <p class="help-tip">Bem-vindo! Você já pode ver a agenda e os avisos. Líderes e administradores: toque em <strong>Entrar</strong> no topo para acessar a gestão.</p>
-                <div class="stat-grid" role="group" aria-label="Resumo do sistema">
-                    <div class="stat-card" title="Total de pessoas cadastradas na igreja">
+                <p class="help-tip" id="dashboardHelpTip">Bem-vindo! Você já pode ver a agenda e os avisos. Líderes e administradores: toque em <strong>Entrar</strong> no topo para acessar a gestão.</p>
+                <div class="stat-grid" id="statGrid" role="group" aria-label="Resumo do sistema">
+                    <div class="stat-card admin-only" id="statCardMembros" title="Total de pessoas cadastradas na igreja">
                         <strong id="statMembros">0</strong>
                         <p>Membros</p>
                     </div>
@@ -112,6 +114,7 @@
                     <div id="calendar" aria-label="Calendário mensal de eventos" title="Use as setas para mudar o mês"></div>
                 </div>
                 <h4 class="section-label">Lista de Eventos</h4>
+                <p class="help-tip admin-only" id="agendaEncerradosTip">Eventos já realizados aparecem abaixo, em cinza e riscados. Você pode editá-los para reaproveitar em uma nova data.</p>
                 <div id="listaEventos" class="lista-cards">
                     <div class="empty-state">Nenhum evento agendado.</div>
                 </div>
@@ -244,6 +247,12 @@
                 <label for="eventoDesc">Descrição</label>
                 <textarea id="eventoDesc" rows="3" placeholder="Ex: Culto de celebração com toda a igreja"></textarea>
             </div>
+            <div id="eventoEquipeSection" class="admin-only">
+                <h4 class="section-label">Equipe do evento (opcional)</h4>
+                <p class="field-hint">Escolha quem participará deste evento. Você também pode ajustar depois em &quot;Gerenciar equipe&quot;.</p>
+                <div id="eventoEquipeRows" class="equipe-form-list"></div>
+                <button type="button" class="btn-outline btn-add-equipe" id="btnAddEquipeRow">+ Adicionar membro à equipe</button>
+            </div>
             <button type="button" class="btn-main" id="btnSalvarEvento">Salvar Evento</button>
         </div>
     </div>
@@ -270,6 +279,15 @@
                     <option value="info">Importante — merece destaque</option>
                     <option value="urgente">Urgente — todos precisam ver</option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="avisoDataExp">Data de término *</label>
+                <input type="date" id="avisoDataExp" title="Até quando o comunicado fica visível">
+            </div>
+            <div class="form-group">
+                <label for="avisoHoraExp">Horário de término *</label>
+                <input type="time" id="avisoHoraExp" title="Hora em que o comunicado deixa de aparecer para visitantes">
+                <span class="field-hint">Após este horário o aviso some do mural (admin ainda vê por alguns dias).</span>
             </div>
             <button type="button" class="btn-main" id="btnSalvarAviso">Publicar Aviso</button>
         </div>
@@ -323,6 +341,6 @@
 
     <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="./src/main.js"></script>
 </body>
 </html>
