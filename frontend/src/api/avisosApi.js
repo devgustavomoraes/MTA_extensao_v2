@@ -1,8 +1,9 @@
 import { apiRequest } from './client.js';
 import { endpoints } from '../config/env.js';
 
-export function listarAvisos({ page = 0, size = 20 } = {}) {
+export function listarAvisos({ page = 0, size = 50, incluirExpirados = false } = {}) {
   const params = new URLSearchParams({ page, size });
+  if (incluirExpirados) params.set('incluirExpirados', 'true');
   return apiRequest(`${endpoints.avisos}?${params}`);
 }
 

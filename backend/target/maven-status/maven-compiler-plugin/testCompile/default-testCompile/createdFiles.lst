@@ -6,5 +6,6 @@ com\projetomta\controller\AuthControllerIntegrationTest.class
 com\projetomta\service\EventoServiceTest.class
 com\projetomta\exception\GlobalExceptionHandlerTest.class
 com\projetomta\support\TestAuthHelper.class
+com\projetomta\config\JwtSecretValidatorTest.class
 com\projetomta\controller\MembroControllerIntegrationTest.class
 com\projetomta\ProjetoMtaApplicationTests.class

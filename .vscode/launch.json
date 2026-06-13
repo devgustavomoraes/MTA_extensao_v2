@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Backend (Spring Boot)",
+      "request": "launch",
+      "mainClass": "com.projetomta.ProjetoMtaApplication",
+      "projectName": "projeto-mta",
+      "cwd": "${workspaceFolder}/backend",
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "dev"
+      }
+    },
+    {
+      "type": "node",
+      "name": "Frontend (Vite)",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/frontend",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "ProjetoMTA: testar tudo (back + front)",
+      "configurations": [
+        "Backend (Spring Boot)",
+        "Frontend (Vite)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

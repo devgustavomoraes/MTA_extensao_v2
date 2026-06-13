@@ -1,5 +1,7 @@
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\AdminSeedRunner.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\AppProperties.java
+C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\DatabaseStartupLogger.java
+C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\ExpiracaoProperties.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\JwtSecretValidator.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\config\SecurityConfig.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\controller\AuthController.java
@@ -48,5 +50,6 @@ C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\proje
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\AvisoService.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\EscalaService.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\EventoService.java
+C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\ExpiracaoCleanupService.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\LoginAttemptRecorder.java
 C:\Users\guife\IdeaProjects\ProjetoDeExten-oSIGI\backend\src\main\java\com\projetomta\service\MembroService.java

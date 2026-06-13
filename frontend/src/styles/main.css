@@ -371,6 +371,96 @@ button:focus-visible {
   margin-bottom: 1rem;
 }
 
+.stat-grid.visitor-stats {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.equipe-form-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.equipe-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.equipe-row select,
+.equipe-row input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn-add-equipe {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.evento-admin-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.evento-encerrado,
+.aviso-expirado {
+  opacity: 0.55;
+  position: relative;
+}
+
+.evento-encerrado strong,
+.evento-encerrado .evento-data,
+.evento-encerrado .evento-local,
+.evento-encerrado .evento-desc,
+.aviso-expirado strong,
+.aviso-expirado p,
+.aviso-expirado .aviso-data {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+.item-badge-encerrado {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+}
+
+.section-encerrados {
+  margin-top: 1.25rem;
+  color: var(--text-muted);
+}
+
+.fc-evento-encerrado {
+  opacity: 0.65;
+}
+
+.fc-evento-encerrado .fc-event-title {
+  text-decoration: line-through;
+}
+
+@media (max-width: 480px) {
+  .equipe-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .stat-card {
   background: var(--surface);
   padding: 1rem 0.75rem;
@@ -874,6 +964,15 @@ button:focus-visible {
 
 .btn-texto:hover {
   color: var(--primary);
+}
+
+.btn-texto-danger {
+  color: var(--danger);
+}
+
+.btn-texto-danger:hover {
+  color: var(--danger);
+  opacity: 0.85;
 }
 
 .theme-grid {

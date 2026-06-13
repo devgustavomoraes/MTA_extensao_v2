@@ -1,0 +1,22 @@
+# Perfil de desenvolvimento — IntelliJ / local / TiDB Cloud
+# Cria/atualiza tabelas automaticamente (ddl-auto: update)
+# Configure variáveis em backend/.env ou Run Configuration do IntelliJ
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: ${DB_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: ${DB_SHOW_SQL:false}
+
+logging:
+  level:
+    com.projetomta: INFO
+    org.hibernate.SQL: ${DB_LOG_SQL:WARN}
+
+app:
+  seed:
+    admin-email: ${SEED_ADMIN_EMAIL:admin@mta.local}
+    admin-password: ${SEED_ADMIN_PASSWORD:admin123}
