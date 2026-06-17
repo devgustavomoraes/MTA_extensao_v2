@@ -47,11 +47,13 @@ export async function apiRequest(path, options = {}) {
     if (error instanceof ApiError) {
       throw error;
     }
+    const destino = config.apiBaseUrl || 'http://localhost:8080 (via proxy do Vite)';
     throw new ApiError(
       0,
       'REDE',
-      `Não foi possível conectar ao servidor em ${config.apiBaseUrl}. ` +
-      'O serviço pode estar iniciando (aguarde ~30s no plano gratuito) ou verifique VITE_API_BASE_URL.'
+      `Não foi possível conectar à API em ${destino}. ` +
+      'Inicie o back-end antes do front: pasta backend → execute dev.bat (ou a tarefa "Backend: iniciar API" no VS Code). ' +
+      'Aguarde a mensagem "Banco conectado" no terminal.'
     );
   }
 }

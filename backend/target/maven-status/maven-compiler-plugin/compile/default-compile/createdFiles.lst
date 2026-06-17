@@ -18,6 +18,7 @@ com\projetomta\domain\entity\Aviso.class
 com\projetomta\dto\AvisoResponse$AvisoResponseBuilder.class
 com\projetomta\exception\CredenciaisInvalidasException.class
 com\projetomta\security\JwtAuthenticationFilter.class
+com\projetomta\config\DatabaseStartupLogger.class
 com\projetomta\service\EscalaService.class
 com\projetomta\security\JwtService.class
 com\projetomta\dto\EventoRequest.class

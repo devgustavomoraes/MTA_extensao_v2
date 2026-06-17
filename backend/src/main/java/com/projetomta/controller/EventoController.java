@@ -37,9 +37,10 @@ public class EventoController {
     public ResponseEntity<Page<EventoResponse>> listar(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim,
+            @RequestParam(required = false, defaultValue = "false") boolean incluirEncerrados,
             @PageableDefault(size = 20, sort = "dataInicio", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return ResponseEntity.ok(eventoService.listar(inicio, fim, pageable));
+        return ResponseEntity.ok(eventoService.listar(inicio, fim, incluirEncerrados, pageable));
     }
 
     @GetMapping("/proximos")

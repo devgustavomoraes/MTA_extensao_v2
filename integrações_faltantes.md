@@ -14,7 +14,7 @@
 | Front-end   | `frontend/`  | Vite 5, PWA, HTML/JS/CSS       | Vercel       |
 | Banco       | —            | MySQL-compatível (TiDB Cloud)  | TiDB Cloud   |
 
-**Protótipo visual original:** `Interface_MTA/` (referência; não é o app em produção).
+**Entrada única do app:** `frontend/index.html` (via `npm run dev` ou build `dist/`).
 
 ---
 

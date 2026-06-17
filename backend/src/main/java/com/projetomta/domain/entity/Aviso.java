@@ -50,6 +50,9 @@ public class Aviso {
     @Builder.Default
     private Boolean ativo = true;
 
+    @Column(name = "data_expiracao")
+    private LocalDateTime dataExpiracao;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publicado_por")
     private Usuario publicadoPor;

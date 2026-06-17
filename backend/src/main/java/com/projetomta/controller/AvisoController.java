@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,9 +31,10 @@ public class AvisoController {
 
     @GetMapping
     public ResponseEntity<Page<AvisoResponse>> listar(
+            @RequestParam(required = false, defaultValue = "false") boolean incluirExpirados,
             @PageableDefault(size = 20, sort = "criadoEm", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(avisoService.listar(pageable));
+        return ResponseEntity.ok(avisoService.listar(incluirExpirados, pageable));
     }
 
     @GetMapping("/{id}")

@@ -5,8 +5,20 @@
  * Preencha VITE_API_BASE_URL quando souber a URL do back-end no Render.
  * Ver: integrações_faltantes.md → seção "Links em Aberto"
  */
+function resolverApiBaseUrl() {
+  const fromEnv = import.meta.env.VITE_API_BASE_URL;
+  if (fromEnv !== undefined && String(fromEnv).trim() !== '') {
+    return String(fromEnv).trim().replace(/\/$/, '');
+  }
+  // Em dev o Vite faz proxy de /api → http://localhost:8080 (mesma origem, sem CORS)
+  if (import.meta.env.DEV) {
+    return '';
+  }
+  return 'http://localhost:8080';
+}
+
 export const config = {
-  apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  apiBaseUrl: resolverApiBaseUrl(),
   appName: import.meta.env.VITE_APP_NAME || 'MTA - Ministério Templo Da Adoração'
 };
 

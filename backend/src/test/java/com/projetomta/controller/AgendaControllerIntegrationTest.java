@@ -181,6 +181,7 @@ class AgendaControllerIntegrationTest {
         avisoRequest.setTitulo("Aviso Geral");
         avisoRequest.setMensagem("Reunião na sexta-feira");
         avisoRequest.setPrioridade(PrioridadeAviso.URGENTE);
+        avisoRequest.setDataExpiracao(LocalDateTime.now().plusDays(7));
 
         mockMvc.perform(post("/api/avisos")
                         .header("Authorization", "Bearer " + tokenAdmin)

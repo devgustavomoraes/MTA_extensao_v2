@@ -2,6 +2,20 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  server: {
+    host: '127.0.0.1',
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/actuator': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    }
+  },
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
@@ -51,7 +65,8 @@ export default defineConfig({
         navigateFallback: 'index.html'
       },
       devOptions: {
-        enabled: true
+        // SW em dev intercepta fetch e quebra chamadas à API local
+        enabled: false
       }
     })
   ]

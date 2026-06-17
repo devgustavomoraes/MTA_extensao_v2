@@ -70,7 +70,7 @@ class EventoServiceTest {
     void deveCriarEventoComPeriodoValido() {
         EventoRequest request = criarRequestValido();
 
-        when(eventoRepository.existsConflitoHorario(any(), any(), isNull())).thenReturn(false);
+        when(eventoRepository.existsConflitoHorario(any(), any(), isNull(), any())).thenReturn(false);
         when(usuarioRepository.findById(1L)).thenReturn(Optional.of(admin));
         when(eventoRepository.save(any(Evento.class))).thenAnswer(invocation -> {
             Evento evento = invocation.getArgument(0);
@@ -111,7 +111,7 @@ class EventoServiceTest {
     void deveRejeitarConflitoDeHorario() {
         EventoRequest request = criarRequestValido();
 
-        when(eventoRepository.existsConflitoHorario(any(), any(), isNull())).thenReturn(true);
+        when(eventoRepository.existsConflitoHorario(any(), any(), isNull(), any())).thenReturn(true);
 
         assertThrows(ConflitoHorarioException.class, () -> eventoService.criar(request));
         verify(eventoRepository, never()).save(any());
@@ -128,12 +128,12 @@ class EventoServiceTest {
                 .build();
 
         when(eventoRepository.findById(5L)).thenReturn(Optional.of(existente));
-        when(eventoRepository.existsConflitoHorario(any(), any(), eq(5L))).thenReturn(false);
+        when(eventoRepository.existsConflitoHorario(any(), any(), eq(5L), any())).thenReturn(false);
         when(eventoRepository.save(any(Evento.class))).thenReturn(existente);
 
         eventoService.atualizar(5L, request);
 
-        verify(eventoRepository).existsConflitoHorario(any(), any(), eq(5L));
+        verify(eventoRepository).existsConflitoHorario(any(), any(), eq(5L), any());
     }
 
     private EventoRequest criarRequestValido() {
