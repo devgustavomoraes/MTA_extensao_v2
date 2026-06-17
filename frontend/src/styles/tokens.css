@@ -1,0 +1,96 @@
+/**
+ * Design System — ProjetoMTA
+ * Temas: light (padrão), dark, blue, pink — persistidos em localStorage
+ */
+
+:root,
+[data-theme="light"] {
+  --primary: #1a365d;
+  --primary-hover: #2a4a7f;
+  --accent: #2b6cb0;
+  --accent-light: #ebf4ff;
+  --danger: #c53030;
+  --success: #276749;
+  --warning: #c05621;
+  --bg: #f7fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #2d3748;
+  --text-muted: #718096;
+  --auth-gradient: linear-gradient(135deg, #0e1929 0%, #0d3e72 100%);
+  --focus-ring: 0 0 0 3px rgba(43, 108, 176, 0.35);
+}
+
+[data-theme="dark"] {
+  --primary: #90cdf4;
+  --primary-hover: #63b3ed;
+  --accent: #63b3ed;
+  --accent-light: #2d3748;
+  --danger: #fc8181;
+  --success: #68d391;
+  --warning: #f6ad55;
+  --bg: #1a202c;
+  --surface: #2d3748;
+  --border: #4a5568;
+  --text: #f7fafc;
+  --text-muted: #a0aec0;
+  --auth-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --focus-ring: 0 0 0 3px rgba(144, 205, 244, 0.35);
+}
+
+[data-theme="blue"] {
+  --primary: #1e3a8a;
+  --primary-hover: #1d4ed8;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --danger: #dc2626;
+  --success: #059669;
+  --warning: #d97706;
+  --bg: #eff6ff;
+  --surface: #ffffff;
+  --border: #bfdbfe;
+  --text: #1e3a8a;
+  --text-muted: #3b82f6;
+  --auth-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="pink"] {
+  --primary: #9d174d;
+  --primary-hover: #be185d;
+  --accent: #db2777;
+  --accent-light: #fce7f3;
+  --danger: #e11d48;
+  --success: #059669;
+  --warning: #ea580c;
+  --bg: #fdf2f8;
+  --surface: #ffffff;
+  --border: #fbcfe8;
+  --text: #831843;
+  --text-muted: #be185d;
+  --auth-gradient: linear-gradient(135deg, #831843 0%, #db2777 100%);
+  --focus-ring: 0 0 0 3px rgba(219, 39, 119, 0.35);
+}
+
+:root {
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-xs: 0.72rem;
+  --font-size-sm: 0.82rem;
+  --font-size-base: 0.9rem;
+  --font-size-lg: 1.1rem;
+  --font-size-xl: 1.8rem;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  --touch-min: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,8 @@
+# Copie este arquivo para application-local.yml (mesma pasta)
+# application-local.yml está no .gitignore — NÃO commite dados sensíveis
+#
+# Contas administrativas: application-admins.yml (copie de application-admins.example.yml)
+
+spring:
+  jpa:
+    show-sql: false

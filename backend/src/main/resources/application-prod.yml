@@ -1,0 +1,22 @@
+# Perfil de produção — Render + TiDB Cloud
+# SPRING_PROFILES_ACTIVE=prod
+# Tabelas devem existir (ddl-auto: validate) — execute schema.sql no TiDB
+
+spring:
+  main:
+    lazy-initialization: true
+  datasource:
+    url: ${DB_JDBC_URL:jdbc:mysql://${DB_HOST}:${DB_PORT:4000}/${DB_NAME:projeto_mta}?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=30000}
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:5}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+logging:
+  level:
+    root: WARN
+    com.projetomta: INFO
+    com.zaxxer.hikari: WARN

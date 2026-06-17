@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Gestão institucional — CRM de membros e agenda de eventos do Ministério Templo Da Adoração">
+    <meta name="theme-color" content="#1a365d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/styles/tokens.css">
+    <link rel="stylesheet" href="./src/styles/main.css">
+    <title>MTA - Ministério Templo Da Adoração</title>
+</head>
+<body>
+    <a href="#app" class="skip-link">Ir para o conteúdo principal</a>
+
+    <div id="appLoader" class="app-loader" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner spinner-lg" aria-hidden="true"></div>
+        <p>Carregando MTA...</p>
+    </div>
+
+    <!-- Aplicação principal (abre direto como visitante) -->
+    <div id="app" aria-hidden="true">
+        <header class="app-header" role="banner">
+            <div class="user-profile">
+                <div class="logo-mini" aria-hidden="true">MTA</div>
+                <div>
+                    <h2 id="userName">Olá, Visitante!</h2>
+                    <p id="userStatus">Ministério Templo Da Adoração</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn-header" id="btnConfig" aria-label="Configurações e temas" title="Personalizar aparência">⚙️</button>
+                <button type="button" class="btn-header btn-header-primary" id="btnEntrar" aria-label="Entrar na conta">Entrar</button>
+                <button type="button" class="btn-logout hidden" id="btnLogout" aria-label="Sair da conta">Sair</button>
+            </div>
+        </header>
+
+        <main class="content-view" role="main">
+            <!-- Dashboard -->
+            <section id="dashboard" class="page" aria-label="Painel inicial">
+                <h3 class="page-title">Início</h3>
+                <p class="help-tip" id="dashboardHelpTip">Bem-vindo! Você já pode ver a agenda e os avisos. Líderes e administradores: toque em <strong>Entrar</strong> no topo para acessar a gestão.</p>
+                <div class="stat-grid" id="statGrid" role="group" aria-label="Resumo do sistema">
+                    <div class="stat-card admin-only" id="statCardMembros" title="Total de pessoas cadastradas na igreja">
+                        <strong id="statMembros">0</strong>
+                        <p>Membros</p>
+                    </div>
+                    <div class="stat-card" title="Eventos programados">
+                        <strong id="statEventos">0</strong>
+                        <p>Eventos</p>
+                    </div>
+                    <div class="stat-card" title="Comunicados publicados para a igreja">
+                        <strong id="statAvisos">0</strong>
+                        <p>Avisos</p>
+                    </div>
+                </div>
+
+                <div id="admActions" class="admin-only">
+                    <h4 class="section-label">Ações Rápidas</h4>
+                    <button type="button" class="action-btn" data-modal="modalMembro">
+                        <span>Cadastrar Novo Membro</span><span class="action-icon" aria-hidden="true">+</span>
+                    </button>
+                    <button type="button" class="action-btn" data-modal="modalEvento">
+                        <span>Agendar Evento</span><span class="action-icon" aria-hidden="true">+</span>
+                    </button>
+                    <button type="button" class="action-btn" data-modal="modalAviso">
+                        <span>Publicar Aviso</span><span class="action-icon" aria-hidden="true">+</span>
+                    </button>
+                </div>
+
+                <div id="proximosEventosDash">
+                    <h4 class="section-label">Próximos Eventos</h4>
+                    <div id="listaEventosDash" class="empty-state">Nenhum evento cadastrado.</div>
+                </div>
+            </section>
+
+            <!-- Membros -->
+            <section id="membros" class="page hidden" aria-label="Gestão de membros">
+                <div class="page-header">
+                    <h3 class="page-title" title="Cadastro de pessoas da igreja">Gestão de Membros</h3>
+                    <button type="button" class="btn-add admin-only" data-modal="modalMembro" aria-label="Cadastrar novo membro">+ Novo</button>
+                </div>
+                <p class="help-tip admin-only">Aqui você cadastra e consulta as pessoas da igreja. Toque em <strong>+ Novo</strong> para adicionar alguém.</p>
+                <div class="search-box">
+                    <label for="buscaMembro" class="hidden">Buscar membro</label>
+                    <input type="search" id="buscaMembro" placeholder="Digite o nome ou telefone para filtrar..." aria-label="Buscar membro por nome ou telefone" title="A busca atualiza automaticamente enquanto você digita">
+                </div>
+                <div id="listaMembros" class="lista-cards">
+                    <div class="empty-state">Nenhum membro cadastrado.</div>
+                </div>
+                <div id="paginacaoMembros" class="paginacao admin-only hidden" aria-label="Paginação de membros">
+                    <button type="button" class="btn-outline btn-paginacao" id="btnMembrosAnterior" disabled>Anterior</button>
+                    <span id="infoPaginacaoMembros" class="paginacao-info">Página 1 de 1</span>
+                    <button type="button" class="btn-outline btn-paginacao" id="btnMembrosProximo" disabled>Próximo</button>
+                </div>
+            </section>
+
+            <!-- Agenda -->
+            <section id="agenda" class="page hidden" aria-label="Calendário de eventos">
+                <div class="page-header">
+                    <h3 class="page-title" title="Todos os cultos, reuniões e atividades">Calendário de Eventos</h3>
+                    <button type="button" class="btn-main admin-only" data-modal="modalEvento" style="width:auto;padding:8px 16px;margin:0" aria-label="Agendar novo evento">+ Novo Evento</button>
+                </div>
+                <p class="help-tip">Veja os próximos cultos e reuniões no calendário. Toque em um evento na lista para ver quem está na equipe (escala).</p>
+                <div id="calendar-container">
+                    <div id="calendar" aria-label="Calendário mensal de eventos" title="Use as setas para mudar o mês"></div>
+                </div>
+                <h4 class="section-label">Lista de Eventos</h4>
+                <p class="help-tip admin-only" id="agendaEncerradosTip">Eventos já realizados aparecem abaixo, em cinza e riscados. Você pode editá-los para reaproveitar em uma nova data.</p>
+                <div id="listaEventos" class="lista-cards">
+                    <div class="empty-state">Nenhum evento agendado.</div>
+                </div>
+            </section>
+
+            <!-- Avisos -->
+            <section id="avisos" class="page hidden" aria-label="Comunicados institucionais">
+                <div class="page-header">
+                    <h3 class="page-title" title="Mural de recados para toda a igreja">Comunicados</h3>
+                    <button type="button" class="btn-add admin-only" data-modal="modalAviso" aria-label="Publicar novo comunicado">+ Novo</button>
+                </div>
+                <p class="help-tip">Recados importantes da liderança. Avisos <strong>urgentes</strong> aparecem destacados em vermelho.</p>
+                <div id="listaAvisos" class="lista-cards">
+                    <div class="empty-state">Nenhum comunicado publicado.</div>
+                </div>
+            </section>
+
+            <!-- Configurações -->
+            <section id="configuracoes" class="page hidden" aria-label="Configurações">
+                <h3 class="page-title">Configurações</h3>
+                <p class="help-tip">Escolha o tema visual do sistema. Sua preferência fica salva neste dispositivo.</p>
+                <h4 class="section-label">Tema do sistema</h4>
+                <div id="themeGrid" class="theme-grid" role="group" aria-label="Seleção de tema"></div>
+            </section>
+        </main>
+
+        <!-- Navegação inferior -->
+        <nav class="tab-bar" role="navigation" aria-label="Menu principal">
+            <button type="button" data-page="dashboard" class="tab-item active" id="tab-dashboard" aria-label="Início">
+                <i aria-hidden="true">🏠</i><span>Início</span>
+            </button>
+            <button type="button" data-page="membros" class="tab-item admin-only" id="tab-membros" aria-label="Membros">
+                <i aria-hidden="true">👥</i><span>Membros</span>
+            </button>
+            <button type="button" data-page="agenda" class="tab-item" id="tab-agenda" aria-label="Agenda">
+                <i aria-hidden="true">📅</i><span>Agenda</span>
+            </button>
+            <button type="button" data-page="avisos" class="tab-item" id="tab-avisos" aria-label="Avisos">
+                <i aria-hidden="true">🔔</i><span>Avisos</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modal: Login (acesso restrito) -->
+    <div id="modalLogin" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalLoginTitulo">
+        <div class="modal-card modal-login-card">
+            <div class="modal-header">
+                <h4 id="modalLoginTitulo">Entrar na conta</h4>
+                <button type="button" class="modal-close" data-close="modalLogin" aria-label="Fechar">✕</button>
+            </div>
+            <p class="modal-descricao">Área para líderes e administradores. Visitantes podem fechar e continuar navegando.</p>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password">
+            </div>
+            <div id="loginErro" class="alert-box hidden" role="alert" aria-live="assertive"></div>
+            <button type="button" class="btn-main" id="btnLoginAdmin">Entrar</button>
+        </div>
+    </div>
+
+    <!-- Modal: Membro -->
+    <div id="modalMembro" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalMembroTitulo">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h4 id="modalMembroTitulo">Novo Membro</h4>
+                <button type="button" class="modal-close" data-close="modalMembro" aria-label="Fechar">✕</button>
+            </div>
+            <div class="form-group">
+                <label for="membroNome">Nome completo *</label>
+                <input type="text" id="membroNome" placeholder="Ex: João da Silva">
+            </div>
+            <div class="form-group">
+                <label for="membroTelefone">Telefone</label>
+                <input type="tel" id="membroTelefone" placeholder="(41) 99999-9999">
+            </div>
+            <div class="form-group">
+                <label for="membroEmail">E-mail</label>
+                <input type="email" id="membroEmail" placeholder="joao@email.com">
+            </div>
+            <div class="form-group">
+                <label for="membroFuncao">Função na Igreja</label>
+                <select id="membroFuncao">
+                    <option value="Membro">Membro</option>
+                    <option value="Diácono">Diácono</option>
+                    <option value="Presbítero">Presbítero</option>
+                    <option value="Pastor">Pastor</option>
+                    <option value="Líder de Célula">Líder de Célula</option>
+                    <option value="Visitante">Visitante</option>
+                </select>
+            </div>
+            <button type="button" class="btn-main" id="btnSalvarMembro">Salvar Membro</button>
+        </div>
+    </div>
+
+    <!-- Modal: Evento -->
+    <div id="modalEvento" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalEventoTitulo">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h4 id="modalEventoTitulo">Novo Evento</h4>
+                <button type="button" class="modal-close" data-close="modalEvento" aria-label="Fechar">✕</button>
+            </div>
+            <div class="form-group">
+                <label for="eventoTitulo">Título do Evento *</label>
+                <input type="text" id="eventoTitulo" placeholder="Ex: Culto de Domingo">
+            </div>
+            <div class="form-group">
+                <label for="eventoData">Data *</label>
+                <input type="date" id="eventoData" title="Dia em que o evento acontece">
+            </div>
+            <div class="form-group">
+                <label for="eventoHora">Horário de início *</label>
+                <input type="time" id="eventoHora" title="Que horas começa">
+                <span class="field-hint">Ex: 10:00 para culto das 10h</span>
+            </div>
+            <div class="form-group">
+                <label for="eventoHoraFim">Horário de término *</label>
+                <input type="time" id="eventoHoraFim" title="Que horas termina">
+                <span class="field-hint">Necessário para evitar conflitos de agenda</span>
+            </div>
+            <div class="form-group">
+                <label for="eventoLocal">Local</label>
+                <input type="text" id="eventoLocal" placeholder="Ex: Templo Sede — salão principal" title="Onde o evento será realizado">
+            </div>
+            <div class="form-group">
+                <label for="eventoDesc">Descrição</label>
+                <textarea id="eventoDesc" rows="3" placeholder="Ex: Culto de celebração com toda a igreja"></textarea>
+            </div>
+            <div id="eventoEquipeSection" class="admin-only">
+                <h4 class="section-label">Equipe do evento (opcional)</h4>
+                <p class="field-hint">Escolha quem participará deste evento. Você também pode ajustar depois em &quot;Gerenciar equipe&quot;.</p>
+                <div id="eventoEquipeRows" class="equipe-form-list"></div>
+                <button type="button" class="btn-outline btn-add-equipe" id="btnAddEquipeRow">+ Adicionar membro à equipe</button>
+            </div>
+            <button type="button" class="btn-main" id="btnSalvarEvento">Salvar Evento</button>
+        </div>
+    </div>
+
+    <!-- Modal: Aviso -->
+    <div id="modalAviso" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalAvisoTitulo">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h4 id="modalAvisoTitulo">Novo Comunicado</h4>
+                <button type="button" class="modal-close" data-close="modalAviso" aria-label="Fechar">✕</button>
+            </div>
+            <div class="form-group">
+                <label for="avisoTitulo">Título *</label>
+                <input type="text" id="avisoTitulo" placeholder="Ex: Reunião da Liderança">
+            </div>
+            <div class="form-group">
+                <label for="avisoMensagem">Mensagem *</label>
+                <textarea id="avisoMensagem" rows="4" placeholder="Escreva o comunicado para todos os membros..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="avisoPrioridade">Prioridade</label>
+                <select id="avisoPrioridade" title="Urgente chama mais atenção no mural">
+                    <option value="normal">Normal — informação do dia a dia</option>
+                    <option value="info">Importante — merece destaque</option>
+                    <option value="urgente">Urgente — todos precisam ver</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="avisoDataExp">Data de término *</label>
+                <input type="date" id="avisoDataExp" title="Até quando o comunicado fica visível">
+            </div>
+            <div class="form-group">
+                <label for="avisoHoraExp">Horário de término *</label>
+                <input type="time" id="avisoHoraExp" title="Hora em que o comunicado deixa de aparecer para visitantes">
+                <span class="field-hint">Após este horário o aviso some do mural (admin ainda vê por alguns dias).</span>
+            </div>
+            <button type="button" class="btn-main" id="btnSalvarAviso">Publicar Aviso</button>
+        </div>
+    </div>
+
+    <!-- Modal: Escala do evento -->
+    <div id="modalEscala" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalEscalaTitulo">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h4 id="modalEscalaTitulo">Equipe do Evento</h4>
+                <button type="button" class="modal-close" data-close="modalEscala" aria-label="Fechar">✕</button>
+            </div>
+            <p id="escalaEventoInfo" class="modal-descricao"></p>
+            <div id="listaEscalas" class="escala-lista">
+                <div class="empty-state">Ninguém escalado ainda.</div>
+            </div>
+            <div id="formEscala" class="admin-only">
+                <h4 class="section-label">Adicionar à equipe</h4>
+                <div class="form-group">
+                    <label for="escalaMembroId">Membro</label>
+                    <select id="escalaMembroId" title="Escolha quem vai participar deste evento">
+                        <option value="">Selecione um membro...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="escalaFuncao">Função neste evento</label>
+                    <input type="text" id="escalaFuncao" placeholder="Ex: Músico, Intercessor, Recepção" title="O que essa pessoa fará neste evento">
+                </div>
+                <button type="button" class="btn-main" id="btnAdicionarEscala">Adicionar à equipe</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
