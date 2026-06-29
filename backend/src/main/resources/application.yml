@@ -11,9 +11,9 @@ spring:
         - dev
         - local
   datasource:
-    url: ${DB_JDBC_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:projeto_mta}?useSSL=${DB_SSL_ENABLED:false}&requireSSL=${DB_SSL_ENABLED:false}&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=30000}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
+    url: ${DB_JDBC_URL:jdbc:mysql://gateway01.us-east-1.prod.aws.tidbcloud.com:4000/projeto_mta?sslMode=VERIFY_IDENTITY&serverTimezone=UTC&allowPublicKeyRetrieval=true&connectTimeout=10000&socketTimeout=30000}
+    username: ${DB_USERNAME:3sWEwpxa2TYs1mn.root}
+    password: ${DB_PASSWORD:f6R5QIaYrHALBO2c}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: projeto-mta-pool
