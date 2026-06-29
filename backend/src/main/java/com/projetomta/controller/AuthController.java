@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -25,7 +24,6 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
-
     @PostMapping("/recuperar-senha")
     public ResponseEntity<Map<String, String>> recuperarSenha(@Valid @RequestBody RecuperarSenhaRequest request) {
         authService.solicitarRecuperacaoSenha(request);
@@ -33,4 +31,5 @@ public class AuthController {
                 "mensagem", "Se o e-mail estiver cadastrado, você receberá instruções de recuperação em breve."
         ));
     }
+
 }

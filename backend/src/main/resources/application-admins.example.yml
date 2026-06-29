@@ -1,0 +1,10 @@
+﻿# Copie para application-admins.yml (mesma pasta) e preencha as contas.
+# application-admins.yml est├í no .gitignore ÔÇö N├âO commite senhas.
+
+app:
+  seed:
+    admins:
+      - email: admin01@exemplo.org
+        password: defina-senha-forte
+      - email: admin02@exemplo.org
+        password: defina-senha-forte

@@ -1,4 +1,8 @@
 .env
 *.env.local
+target/
 application-local.yml
+application-admins.yml
 src/main/resources/application-local.yml
+src/main/resources/application-admins.yml
+
