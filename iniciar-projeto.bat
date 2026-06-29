@@ -77,6 +77,7 @@ if exist "%ROOT%backend\src\main\resources\application-local.yml" (
     echo    ^(ou configure application-local.yml^)
 )
 echo.
+
 echo  Para encerrar: feche as janelas Backend e Frontend
 echo  ou execute parar-projeto.bat
 echo.

@@ -58,9 +58,10 @@ public class AuthService {
     }
 
     public void solicitarRecuperacaoSenha(RecuperarSenhaRequest request) {
-        // Placeholder: integração de e-mail será implementada na Etapa 6 (front-end).
+        // Placeholder: integração de e-mail será implementada no front-end / etapa posterior.
         usuarioRepository.findByEmail(request.getEmail().trim().toLowerCase());
     }
+
 
     private void validarContaBloqueada(Usuario usuario) {
         if (usuario.isBloqueado()) {
@@ -68,6 +69,14 @@ public class AuthService {
         }
 
         loginAttemptRecorder.desbloquearSeExpirado(usuario.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existeUsuario(String email) {
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+        return usuarioRepository.existsByEmail(email.trim().toLowerCase());
     }
 
     @Transactional

@@ -14,3 +14,4 @@ export function recuperarSenha(email) {
     body: JSON.stringify({ email })
   });
 }
+

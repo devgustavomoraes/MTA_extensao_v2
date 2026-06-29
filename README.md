@@ -38,8 +38,7 @@ O sistema segue a arquitetura de um Progressive Web App (PWA) de alta disponibil
 ## ✨ Funcionalidades (MVP)
 
 ### 🔐 Autenticação e Segurança
-- [x] Cadastro, login e logout de usuários.
-- [x] Recuperação e redefinição de senha.
+- [x] Login e logout de administradores.
 - [x] Controle de acesso por perfil (Administrador e Usuário).
 - [x] Bloqueio após 5 tentativas de login inválidas.
 - [x] Senhas armazenadas com criptografia.

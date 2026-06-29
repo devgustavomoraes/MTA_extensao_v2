@@ -1055,6 +1055,7 @@ function registrarEventos() {
   document.getElementById('buscaMembro').addEventListener('input', filtrarMembros);
   document.getElementById('btnAbrirRecuperacao').addEventListener('click', () => abrirModal('modalRecuperacao'));
   document.getElementById('btnEnviarRecuperacao').addEventListener('click', enviarRecuperacaoSenha);
+
   document.getElementById('btnAdicionarEscala').addEventListener('click', adicionarMembroEscala);
   document.getElementById('btnAddEquipeRow')?.addEventListener('click', () => adicionarLinhaEquipeEvento());
   document.getElementById('eventoEquipeRows')?.addEventListener('click', (e) => {

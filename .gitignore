@@ -1,0 +1,25 @@
+# Build e dependências
+backend/target/
+frontend/node_modules/
+frontend/dist/
+frontend/dev-dist/
+
+# Configuração local (não versionar)
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-admins.yml
+frontend/.env
+frontend/.env.local
+*.env.local
+
+# Relatórios e logs
+*.log
+frontend/lighthouse-report.json
+
+# IDE
+.idea/
+*.iml
+.vscode/*.log
+
+# SO
+.DS_Store
+Thumbs.db

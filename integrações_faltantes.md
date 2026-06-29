@@ -76,7 +76,6 @@ JWT_SECRET=… (≥ 32 caracteres)
 CORS_ALLOWED_ORIGINS=https://SEU-PROJETO.vercel.app
 SEED_ADMIN_EMAIL=seu@email.com
 SEED_ADMIN_PASSWORD=senha-forte-inicial
-```
 
 ### Passo 3 — PWA (Vercel)
 
@@ -355,6 +354,11 @@ CREATE TABLE IF NOT EXISTS avisos (
 **Opção A (recomendada):** `SEED_ADMIN_EMAIL` + `SEED_ADMIN_PASSWORD` no Render. Criado automaticamente na 1ª execução se o e-mail não existir.
 
 **Opção B (SQL manual):** insira com hash BCrypt gerado localmente.
+
+Configure `backend/src/main/resources/application-admins.yml` (arquivo **gitignored**) com a lista de contas. No primeiro boot, o sistema cria automaticamente os usuários que ainda não existem.
+
+**Produção (Render):** inclua o conteúdo de `application-admins.yml` via secret/volume ou crie os usuários manualmente no SQL Editor com hash BCrypt.
+
 
 ---
 
