@@ -18,7 +18,7 @@ spring:
     hikari:
       pool-name: projeto-mta-pool
 
-      maximum-pool-size: ${DB_POOL_MAX_SIZE:5}
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:3}
       minimum-idle: ${DB_POOL_MIN_IDLE:1}
       connection-timeout: ${DB_POOL_CONNECTION_TIMEOUT:30000}
       idle-timeout: ${DB_POOL_IDLE_TIMEOUT:600000}
@@ -48,7 +48,7 @@ server:
     mime-types: application/json,text/plain
   tomcat:
     threads:
-      max: ${TOMCAT_MAX_THREADS:50}
+      max: ${TOMCAT_MAX_THREADS:20}
 
 management:
   endpoints:
