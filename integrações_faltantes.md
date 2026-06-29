@@ -74,9 +74,8 @@ DB_PASSWORD=…
 DB_SSL_ENABLED=true
 JWT_SECRET=… (≥ 32 caracteres)
 CORS_ALLOWED_ORIGINS=https://SEU-PROJETO.vercel.app
-```
-
-> **Administradores:** configure `application-admins.yml` no servidor (não versionado) antes do primeiro deploy.
+SEED_ADMIN_EMAIL=seu@email.com
+SEED_ADMIN_PASSWORD=senha-forte-inicial
 
 ### Passo 3 — PWA (Vercel)
 
@@ -118,6 +117,7 @@ Base: `{VITE_API_BASE_URL}` + caminho.
 | Método | Caminho | Descrição |
 |--------|---------|-----------|
 | `POST` | `/api/auth/login` | Login → JWT |
+| `POST` | `/api/auth/recuperar-senha` | Placeholder (sem e-mail real ainda) |
 
 ### CRM — Membros
 
@@ -193,6 +193,8 @@ jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=true&requireSSL=true&server
 | `CORS_ALLOWED_ORIGINS` | URL(s) do front Vercel | Sim | `https://….vercel.app` |
 | `LOGIN_MAX_ATTEMPTS` | Tentativas antes do bloqueio | Não | `5` |
 | `LOGIN_LOCK_DURATION_MIN` | Minutos de bloqueio | Não | `30` |
+| `SEED_ADMIN_EMAIL` | Admin criado na 1ª execução | Recomendado | `admin@igreja.com` |
+| `SEED_ADMIN_PASSWORD` | Senha inicial do admin | Recomendado | senha forte |
 | `DB_POOL_MAX_SIZE` | Pool HikariCP máximo | Não | `5` |
 | `DB_POOL_MIN_IDLE` | Conexões ociosas mínimas | Não | `1` |
 | `DB_POOL_CONNECTION_TIMEOUT` | Timeout conexão (ms) | Não | `30000` |
@@ -347,11 +349,16 @@ CREATE TABLE IF NOT EXISTS avisos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
-### 5.5 Administradores iniciais
+### 5.5 Admin inicial
+
+**Opção A (recomendada):** `SEED_ADMIN_EMAIL` + `SEED_ADMIN_PASSWORD` no Render. Criado automaticamente na 1ª execução se o e-mail não existir.
+
+**Opção B (SQL manual):** insira com hash BCrypt gerado localmente.
 
 Configure `backend/src/main/resources/application-admins.yml` (arquivo **gitignored**) com a lista de contas. No primeiro boot, o sistema cria automaticamente os usuários que ainda não existem.
 
 **Produção (Render):** inclua o conteúdo de `application-admins.yml` via secret/volume ou crie os usuários manualmente no SQL Editor com hash BCrypt.
+
 
 ---
 
@@ -444,7 +451,7 @@ Após `npm run build` + `npm run preview`:
 - [ ] Cluster TiDB criado (plano gratuito)
 - [ ] SQL seções 5.1 → 5.4 executado
 - [ ] `JWT_SECRET` gerado e salvo com segurança
-- [ ] Render: variáveis `DB_*`, `JWT_*`, `CORS_*`, `SPRING_PROFILES_ACTIVE=prod`
+- [ ] Render: variáveis `DB_*`, `JWT_*`, `CORS_*`, `SEED_*`, `SPRING_PROFILES_ACTIVE=prod`
 - [ ] Render: health check `/actuator/health`
 - [ ] Render: deploy OK, URL anotada
 - [ ] Vercel: `VITE_API_BASE_URL` = URL Render
@@ -479,5 +486,6 @@ Após `npm run build` + `npm run preview`:
 
 | Item | Status |
 |------|--------|
+| Envio real de e-mail (recuperação de senha) | Placeholder na API |
 | Refresh token JWT | Não implementado |
 | Dockerfile para Render Blueprint | Opcional (`render.yaml` referencia docker) |

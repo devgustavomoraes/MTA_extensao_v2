@@ -4,7 +4,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br.js';
 import { config } from '../config/env.js';
-import { login } from '../api/authApi.js';
+import { login, recuperarSenha } from '../api/authApi.js';
 import { listarMembros, criarMembro, excluirMembro as excluirMembroApi } from '../api/membrosApi.js';
 import {
   listarEventos,
@@ -133,6 +133,37 @@ function limparErroLogin() {
   const el = document.getElementById('loginErro');
   el.textContent = '';
   el.classList.add('hidden');
+}
+
+async function enviarRecuperacaoSenha() {
+  const email = document.getElementById('recuperacaoEmail').value.trim();
+  const erroEl = document.getElementById('recuperacaoErro');
+  const sucessoEl = document.getElementById('recuperacaoSucesso');
+  const btn = document.getElementById('btnEnviarRecuperacao');
+
+  erroEl.classList.add('hidden');
+  sucessoEl.classList.add('hidden');
+
+  if (!email) {
+    erroEl.textContent = 'Informe seu e-mail para continuar.';
+    erroEl.classList.remove('hidden');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  try {
+    const resposta = await recuperarSenha(email);
+    sucessoEl.textContent = resposta.mensagem;
+    sucessoEl.classList.remove('hidden');
+  } catch (error) {
+    erroEl.textContent = error instanceof ApiError ? error.message : 'Não foi possível enviar a solicitação.';
+    erroEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enviar instruções';
+  }
 }
 
 async function recarregarDadosAutenticados() {
@@ -1022,6 +1053,9 @@ function registrarEventos() {
   document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
   document.getElementById('btnSalvarAviso').addEventListener('click', salvarAviso);
   document.getElementById('buscaMembro').addEventListener('input', filtrarMembros);
+  document.getElementById('btnAbrirRecuperacao').addEventListener('click', () => abrirModal('modalRecuperacao'));
+  document.getElementById('btnEnviarRecuperacao').addEventListener('click', enviarRecuperacaoSenha);
+
   document.getElementById('btnAdicionarEscala').addEventListener('click', adicionarMembroEscala);
   document.getElementById('btnAddEquipeRow')?.addEventListener('click', () => adicionarLinhaEquipeEvento());
   document.getElementById('eventoEquipeRows')?.addEventListener('click', (e) => {

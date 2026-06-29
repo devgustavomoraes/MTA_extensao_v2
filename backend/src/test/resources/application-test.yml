@@ -24,3 +24,6 @@ app:
     admins:
       - email: admin@test.com
         password: senha123
+    admin-email: admin@test.com
+    admin-password: senha123
+

@@ -43,12 +43,9 @@ public class AppProperties {
     @Setter
     public static class Seed {
         private List<AdminAccount> admins = new ArrayList<>();
-    }
 
-    @Getter
-    @Setter
-    public static class AdminAccount {
-        private String email;
-        private String password;
+        private String adminEmail;
+        private String adminPassword;
+
     }
 }

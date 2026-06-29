@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/recuperar-senha").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/eventos/proximos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/eventos/*/escalas").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/eventos", "/api/eventos/*").permitAll()

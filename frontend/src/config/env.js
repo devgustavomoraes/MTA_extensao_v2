@@ -24,6 +24,7 @@ export const config = {
 
 export const endpoints = {
   login: '/api/auth/login',
+  recuperarSenha: '/api/auth/recuperar-senha',
   membros: '/api/membros',
   eventos: '/api/eventos',
   eventosProximos: '/api/eventos/proximos',

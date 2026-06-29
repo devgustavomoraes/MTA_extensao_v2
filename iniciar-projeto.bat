@@ -64,6 +64,20 @@ echo   Acesse: http://localhost:5173
 echo   API:    http://localhost:8080/actuator/health
 echo  ============================================
 echo.
+echo  CREDENCIAIS DE LOGIN (admin):
+if exist "%ROOT%backend\src\main\resources\application-local.yml" (
+    for /f "usebackq tokens=1,* delims=:" %%a in (`findstr /C:"admin-email" /C:"admin-password" "%ROOT%backend\src\main\resources\application-local.yml"`) do (
+        set "LINHA=%%b"
+        set "LINHA=!LINHA: =!"
+        echo    %%a: !LINHA!
+    )
+) else (
+    echo    E-mail: admin@mta.local
+    echo    Senha:  admin123
+    echo    ^(ou configure application-local.yml^)
+)
+echo.
+
 echo  Para encerrar: feche as janelas Backend e Frontend
 echo  ou execute parar-projeto.bat
 echo.

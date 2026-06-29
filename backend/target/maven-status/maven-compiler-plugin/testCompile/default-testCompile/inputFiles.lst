@@ -1,0 +1,11 @@
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\config\JwtSecretValidatorTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\controller\AgendaControllerIntegrationTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\controller\AuthControllerIntegrationTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\controller\MembroControllerIntegrationTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\exception\GlobalExceptionHandlerTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\ProjetoMtaApplicationTests.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\repository\MembroRepositoryIntegrationTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\service\EventoServiceTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\service\MembroServiceTest.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\support\TestAuthHelper.java
+C:\Users\guife\IdeaProjects\GestãoFiscal\MTA_extensao_v2\backend\src\test\java\com\projetomta\support\TestDatabaseCleaner.java

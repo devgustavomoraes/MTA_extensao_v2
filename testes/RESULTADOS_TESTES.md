@@ -155,6 +155,8 @@ BUILD SUCCESS
    - **Não use** `src/resources` — use apenas `src/main/resources`
 4. Suba o front: `frontend/dev.bat` → `http://localhost:5173`
 5. Login admin: use conta configurada em `application-admins.yml`
+5. Login seed dev: `admin@mta.local` / `admin123` (se não configurou `SEED_*`)
+
 
 ---
 

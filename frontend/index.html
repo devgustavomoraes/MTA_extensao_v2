@@ -38,7 +38,7 @@
             </div>
             <div class="header-actions">
                 <button type="button" class="btn-header" id="btnConfig" aria-label="Configurações e temas" title="Personalizar aparência">⚙️</button>
-                <button type="button" class="btn-header btn-header-primary" id="btnEntrar" aria-label="Entrar na conta">Entrar</button>
+                <button type="button" class="btn-header btn-header-primary" id="btnEntrar" aria-label="Entrar com e-mail e senha">Entrar</button>
                 <button type="button" class="btn-logout hidden" id="btnLogout" aria-label="Sair da conta">Sair</button>
             </div>
         </header>
@@ -173,6 +173,7 @@
             <div class="form-group">
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password">
+                <button type="button" class="link-button" id="btnAbrirRecuperacao">Esqueci minha senha</button>
             </div>
             <div id="loginErro" class="alert-box hidden" role="alert" aria-live="assertive"></div>
             <button type="button" class="btn-main" id="btnLoginAdmin">Entrar</button>
@@ -317,6 +318,24 @@
                 </div>
                 <button type="button" class="btn-main" id="btnAdicionarEscala">Adicionar à equipe</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal: Recuperação de senha -->
+    <div id="modalRecuperacao" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalRecuperacaoTitulo">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h4 id="modalRecuperacaoTitulo">Recuperar Senha</h4>
+                <button type="button" class="modal-close" data-close="modalRecuperacao" aria-label="Fechar">✕</button>
+            </div>
+            <p class="modal-descricao">Informe seu e-mail cadastrado. Se existir uma conta, você receberá instruções de recuperação.</p>
+            <div class="form-group">
+                <label for="recuperacaoEmail">E-mail</label>
+                <input type="email" id="recuperacaoEmail" placeholder="seu@email.com" autocomplete="email">
+            </div>
+            <div id="recuperacaoErro" class="alert-box hidden" role="alert"></div>
+            <div id="recuperacaoSucesso" class="alert-box alert-success hidden" role="status"></div>
+            <button type="button" class="btn-main" id="btnEnviarRecuperacao">Enviar instruções</button>
         </div>
     </div>
 
