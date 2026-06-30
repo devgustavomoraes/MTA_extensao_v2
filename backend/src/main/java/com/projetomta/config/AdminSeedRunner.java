@@ -17,35 +17,15 @@ public class AdminSeedRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        var admins = appProperties.getSeed().getAdmins();
-        if (admins != null && !admins.isEmpty()) {
-            int criados = 0;
-            for (AppProperties.AdminAccount conta : admins) {
-                if (conta.getEmail() == null || conta.getEmail().isBlank()) {
-                    continue;
-                }
-                boolean existia = authService.existeUsuario(conta.getEmail());
-                authService.criarUsuarioAdminSeNecessario(conta.getEmail(), conta.getPassword());
-                if (!existia) {
-                    criados++;
-                }
-            }
-
-            log.info("Administradores verificados: {} conta(s) configurada(s), {} nova(s) criada(s)",
-                    admins.size(), criados);
-            return;
-        }
-
         String email = appProperties.getSeed().getAdminEmail();
         String senha = appProperties.getSeed().getAdminPassword();
 
         if (email == null || email.isBlank()) {
-            log.warn("Nenhuma conta admin configurada (nenhum 'admins' nem SEED_ADMIN_*).");
+            log.warn("Nenhuma conta admin configurada. Defina SEED_ADMIN_EMAIL e SEED_ADMIN_PASSWORD.");
             return;
         }
 
         authService.criarUsuarioAdminSeNecessario(email, senha);
         log.info("Verificação de usuário administrador inicial concluída para: {}", email);
-
     }
 }
