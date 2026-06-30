@@ -1,9 +1,5 @@
 /**
  * Destinos de integração — valores definidos em runtime via .env (local) ou Vercel (produção).
- *
- * ⚠️ O endereço real da API NÃO está fixo no código.
- * Preencha VITE_API_BASE_URL quando souber a URL do back-end no Render.
- * Ver: integrações_faltantes.md → seção "Links em Aberto"
  */
 function resolverApiBaseUrl() {
   const fromEnv = import.meta.env.VITE_API_BASE_URL;
@@ -14,7 +10,7 @@ function resolverApiBaseUrl() {
   if (import.meta.env.DEV) {
     return '';
   }
-  return 'http://localhost:8080';
+  return 'https://mta-extensao-v2-2.onrender.com';
 }
 
 export const config = {
