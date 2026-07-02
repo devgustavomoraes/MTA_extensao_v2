@@ -53,7 +53,7 @@ public class AvisoService {
                 .titulo(request.getTitulo().trim())
                 .mensagem(request.getMensagem().trim())
                 .prioridade(request.getPrioridade() != null ? request.getPrioridade() : PrioridadeAviso.NORMAL)
-                .ativo(request.getAtivo() != null ? request.getAtivo() : true)
+                .ativo(true) // sempre ativo na criação
                 .dataExpiracao(request.getDataExpiracao())
                 .publicadoPor(publicador)
                 .build();
@@ -92,8 +92,13 @@ public class AvisoService {
     }
 
     private Aviso buscarEntidade(Long id) {
-        return avisoRepository.findById(id)
+        Aviso aviso = avisoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Aviso não encontrado"));
+        // 🔒 CORRIGIDO: aviso inativo (soft delete) não pode ser acessado
+        if (!Boolean.TRUE.equals(aviso.getAtivo())) {
+            throw new RecursoNaoEncontradoException("Aviso não encontrado");
+        }
+        return aviso;
     }
 
     private void validarDataExpiracao(LocalDateTime dataExpiracao) {
