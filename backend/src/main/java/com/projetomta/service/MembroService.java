@@ -42,7 +42,7 @@ public class MembroService {
                 .telefone(request.getTelefone())
                 .funcao(request.getFuncao())
                 .observacoes(request.getObservacoes())
-                .ativo(request.getAtivo() != null ? request.getAtivo() : true)
+                .ativo(true) // 🔒 CORRIGIDO: membro novo sempre começa ativo, ignorar request
                 .build();
 
         return paraResponse(membroRepository.save(membro));
