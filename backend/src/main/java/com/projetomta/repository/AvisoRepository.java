@@ -21,6 +21,9 @@ public interface AvisoRepository extends JpaRepository<Aviso, Long> {
             """)
     Page<Aviso> findAtivosVigentes(@Param("agora") LocalDateTime agora, Pageable pageable);
 
-    @Modifying
-    int deleteByDataExpiracaoIsNotNullAndDataExpiracaoBefore(LocalDateTime limite);
+    // 🔒 CORRIGIDO: clearAutomatically limpa o cache do JPA após a deleção,
+    // evitando inconsistências e erro 500 em consultas subsequentes
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM Aviso a WHERE a.dataExpiracao IS NOT NULL AND a.dataExpiracao < :limite")
+    int deleteByDataExpiracaoIsNotNullAndDataExpiracaoBefore(@Param("limite") LocalDateTime limite);
 }
