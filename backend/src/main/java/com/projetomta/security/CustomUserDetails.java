@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class CustomUserDetails implements UserDetails {
     private final String senhaHash;
     private final Perfil perfil;
     private final boolean ativo;
+    private final LocalDateTime bloqueadoAte; // 🔒 ADICIONADO
 
     public CustomUserDetails(Usuario usuario) {
         this.id = usuario.getId();
@@ -25,6 +27,7 @@ public class CustomUserDetails implements UserDetails {
         this.senhaHash = usuario.getSenhaHash();
         this.perfil = usuario.getPerfil();
         this.ativo = Boolean.TRUE.equals(usuario.getAtivo());
+        this.bloqueadoAte = usuario.getBloqueadoAte(); // 🔒 ADICIONADO
     }
 
     @Override
@@ -47,9 +50,10 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
+    // 🔒 CORRIGIDO: Spring Security agora reconhece o bloqueio corretamente
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return bloqueadoAte == null || !bloqueadoAte.isAfter(LocalDateTime.now());
     }
 
     @Override
