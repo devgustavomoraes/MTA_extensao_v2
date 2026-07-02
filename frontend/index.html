@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Gestão institucional — CRM de membros e agenda de eventos do Ministério Templo Da Adoração">
-    <meta name="theme-color" content="#1a365d">
+    <meta name="theme-color" content="#1b3a5c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
     <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./src/styles/tokens.css">
     <link rel="stylesheet" href="./src/styles/main.css">
     <title>MTA - Ministério Templo Da Adoração</title>
@@ -30,14 +30,17 @@
     <div id="app" aria-hidden="true">
         <header class="app-header" role="banner">
             <div class="user-profile">
-                <div class="logo-mini" aria-hidden="true">MTA</div>
+                <div class="logo-mini" aria-hidden="true">✝ MTA</div>
                 <div>
                     <h2 id="userName">Olá, Visitante!</h2>
                     <p id="userStatus">Ministério Templo Da Adoração</p>
                 </div>
             </div>
             <div class="header-actions">
-                <button type="button" class="btn-header" id="btnConfig" aria-label="Configurações e temas" title="Personalizar aparência">⚙️</button>
+                <button type="button" class="theme-toggle" id="btnThemeToggle" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+                    <span class="theme-toggle-lbl" id="themeToggleLbl">Claro</span>
+                    <span class="theme-toggle-track"><span class="theme-toggle-thumb" id="themeToggleThumb">☀</span></span>
+                </button>
                 <button type="button" class="btn-header btn-header-primary" id="btnEntrar" aria-label="Entrar com e-mail e senha">Entrar</button>
                 <button type="button" class="btn-logout hidden" id="btnLogout" aria-label="Sair da conta">Sair</button>
             </div>
@@ -132,13 +135,6 @@
                 </div>
             </section>
 
-            <!-- Configurações -->
-            <section id="configuracoes" class="page hidden" aria-label="Configurações">
-                <h3 class="page-title">Configurações</h3>
-                <p class="help-tip">Escolha o tema visual do sistema. Sua preferência fica salva neste dispositivo.</p>
-                <h4 class="section-label">Tema do sistema</h4>
-                <div id="themeGrid" class="theme-grid" role="group" aria-label="Seleção de tema"></div>
-            </section>
         </main>
 
         <!-- Navegação inferior -->
@@ -173,7 +169,6 @@
             <div class="form-group">
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password">
-                <button type="button" class="link-button" id="btnAbrirRecuperacao">Esqueci minha senha</button>
             </div>
             <div id="loginErro" class="alert-box hidden" role="alert" aria-live="assertive"></div>
             <button type="button" class="btn-main" id="btnLoginAdmin">Entrar</button>
@@ -318,24 +313,6 @@
                 </div>
                 <button type="button" class="btn-main" id="btnAdicionarEscala">Adicionar à equipe</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal: Recuperação de senha -->
-    <div id="modalRecuperacao" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalRecuperacaoTitulo">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h4 id="modalRecuperacaoTitulo">Recuperar Senha</h4>
-                <button type="button" class="modal-close" data-close="modalRecuperacao" aria-label="Fechar">✕</button>
-            </div>
-            <p class="modal-descricao">Informe seu e-mail cadastrado. Se existir uma conta, você receberá instruções de recuperação.</p>
-            <div class="form-group">
-                <label for="recuperacaoEmail">E-mail</label>
-                <input type="email" id="recuperacaoEmail" placeholder="seu@email.com" autocomplete="email">
-            </div>
-            <div id="recuperacaoErro" class="alert-box hidden" role="alert"></div>
-            <div id="recuperacaoSucesso" class="alert-box alert-success hidden" role="status"></div>
-            <button type="button" class="btn-main" id="btnEnviarRecuperacao">Enviar instruções</button>
         </div>
     </div>
 

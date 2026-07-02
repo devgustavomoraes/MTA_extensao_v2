@@ -1,79 +1,54 @@
 /**
  * Design System — ProjetoMTA
- * Temas: light (padrão), dark, blue, pink — persistidos em localStorage
+ * Temas: light (padrão) e dark — persistidos em localStorage
  */
 
 :root,
 [data-theme="light"] {
-  --primary: #1a365d;
-  --primary-hover: #2a4a7f;
-  --accent: #2b6cb0;
-  --accent-light: #ebf4ff;
-  --danger: #c53030;
-  --success: #276749;
-  --warning: #c05621;
-  --bg: #f7fafc;
+  --primary: #1b3a5c;
+  --primary-hover: #244f7d;
+  --accent: #2563a8;
+  --accent-light: #ebf2fb;
+  --gold: #b8960c;
+  --gold-light: #f5efc0;
+  --danger: #b91c1c;
+  --success: #166534;
+  --warning: #92400e;
+  --bg: #f7f8fa;
   --surface: #ffffff;
-  --border: #e2e8f0;
-  --text: #2d3748;
-  --text-muted: #718096;
-  --auth-gradient: linear-gradient(135deg, #0e1929 0%, #0d3e72 100%);
-  --focus-ring: 0 0 0 3px rgba(43, 108, 176, 0.35);
+  --border: #dde3ec;
+  --text: #1a2535;
+  --text-muted: #6b7a90;
+  --auth-gradient: linear-gradient(150deg, #0a1628 0%, #1b3a5c 60%, #2563a8 100%);
+  --shadow: 0 2px 10px rgba(27, 58, 92, 0.08);
+  --shadow-md: 0 4px 20px rgba(27, 58, 92, 0.13);
+  --focus-ring: 0 0 0 3px rgba(37, 99, 168, 0.28);
 }
 
 [data-theme="dark"] {
-  --primary: #90cdf4;
-  --primary-hover: #63b3ed;
-  --accent: #63b3ed;
-  --accent-light: #2d3748;
-  --danger: #fc8181;
-  --success: #68d391;
-  --warning: #f6ad55;
-  --bg: #1a202c;
-  --surface: #2d3748;
-  --border: #4a5568;
-  --text: #f7fafc;
-  --text-muted: #a0aec0;
-  --auth-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  --focus-ring: 0 0 0 3px rgba(144, 205, 244, 0.35);
-}
-
-[data-theme="blue"] {
-  --primary: #1e3a8a;
-  --primary-hover: #1d4ed8;
-  --accent: #2563eb;
-  --accent-light: #dbeafe;
-  --danger: #dc2626;
-  --success: #059669;
-  --warning: #d97706;
-  --bg: #eff6ff;
-  --surface: #ffffff;
-  --border: #bfdbfe;
-  --text: #1e3a8a;
-  --text-muted: #3b82f6;
-  --auth-gradient: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
-}
-
-[data-theme="pink"] {
-  --primary: #9d174d;
-  --primary-hover: #be185d;
-  --accent: #db2777;
-  --accent-light: #fce7f3;
-  --danger: #e11d48;
-  --success: #059669;
-  --warning: #ea580c;
-  --bg: #fdf2f8;
-  --surface: #ffffff;
-  --border: #fbcfe8;
-  --text: #831843;
-  --text-muted: #be185d;
-  --auth-gradient: linear-gradient(135deg, #831843 0%, #db2777 100%);
-  --focus-ring: 0 0 0 3px rgba(219, 39, 119, 0.35);
+  --primary: #7eb3e8;
+  --primary-hover: #a3c8f0;
+  --accent: #5b9fd6;
+  --accent-light: #1a2f48;
+  --gold: #e8c547;
+  --gold-light: #3a2f05;
+  --danger: #f87171;
+  --success: #4ade80;
+  --warning: #fb923c;
+  --bg: #141b24;
+  --surface: #1e2a38;
+  --border: #2c3e52;
+  --text: #e2eaf4;
+  --text-muted: #7a94b0;
+  --auth-gradient: linear-gradient(150deg, #060d14 0%, #141b24 100%);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --focus-ring: 0 0 0 3px rgba(126, 179, 232, 0.28);
 }
 
 :root {
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Playfair Display', 'Inter', system-ui, serif;
   --font-size-xs: 0.72rem;
   --font-size-sm: 0.82rem;
   --font-size-base: 0.9rem;
@@ -81,7 +56,6 @@
   --font-size-xl: 1.8rem;
   --radius: 12px;
   --radius-lg: 20px;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   --touch-min: 44px;
 }
 

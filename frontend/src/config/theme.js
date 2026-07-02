@@ -2,16 +2,12 @@ const THEME_KEY = 'mta_theme';
 
 export const TEMAS_DISPONIVEIS = [
   { id: 'light', nome: 'Claro', emoji: '☀️', descricao: 'Fundo claro, ideal para o dia' },
-  { id: 'dark', nome: 'Escuro', emoji: '🌙', descricao: 'Confortável à noite' },
-  { id: 'blue', nome: 'Azul', emoji: '💙', descricao: 'Paleta azul clássica' },
-  { id: 'pink', nome: 'Rosa', emoji: '💗', descricao: 'Paleta rosa suave' }
+  { id: 'dark', nome: 'Escuro', emoji: '🌙', descricao: 'Confortável à noite' }
 ];
 
 const META_CORES = {
-  light: '#1a365d',
-  dark: '#0f172a',
-  blue: '#1e40af',
-  pink: '#9d174d'
+  light: '#1b3a5c',
+  dark: '#141b24'
 };
 
 export function carregarTema() {

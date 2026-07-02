@@ -4,7 +4,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br.js';
 import { config } from '../config/env.js';
-import { login, recuperarSenha } from '../api/authApi.js';
+import { login } from '../api/authApi.js';
 import { listarMembros, criarMembro, excluirMembro as excluirMembroApi } from '../api/membrosApi.js';
 import {
   listarEventos,
@@ -25,7 +25,7 @@ import {
   isAdmin,
   obterUsuario
 } from '../auth/session.js';
-import { carregarTema, salvarTema, TEMAS_DISPONIVEIS } from '../config/theme.js';
+import { carregarTema, salvarTema } from '../config/theme.js';
 import {
   formatarDataHora,
   formatarData,
@@ -135,37 +135,6 @@ function limparErroLogin() {
   el.classList.add('hidden');
 }
 
-async function enviarRecuperacaoSenha() {
-  const email = document.getElementById('recuperacaoEmail').value.trim();
-  const erroEl = document.getElementById('recuperacaoErro');
-  const sucessoEl = document.getElementById('recuperacaoSucesso');
-  const btn = document.getElementById('btnEnviarRecuperacao');
-
-  erroEl.classList.add('hidden');
-  sucessoEl.classList.add('hidden');
-
-  if (!email) {
-    erroEl.textContent = 'Informe seu e-mail para continuar.';
-    erroEl.classList.remove('hidden');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Enviando...';
-
-  try {
-    const resposta = await recuperarSenha(email);
-    sucessoEl.textContent = resposta.mensagem;
-    sucessoEl.classList.remove('hidden');
-  } catch (error) {
-    erroEl.textContent = error instanceof ApiError ? error.message : 'Não foi possível enviar a solicitação.';
-    erroEl.classList.remove('hidden');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Enviar instruções';
-  }
-}
-
 async function recarregarDadosAutenticados() {
   configurarAcesso();
   definirCarregamento('listaEventosDash', true, 'Atualizando painel...');
@@ -190,7 +159,7 @@ async function iniciarApp() {
   userRole = sessaoAtiva() ? (isAdmin() ? 'admin' : 'usuario') : 'visitor';
   configurarAcesso();
   inicializarCalendario();
-  renderizarSeletorTemas();
+  sincronizarToggleTema();
 
   try {
     await Promise.all([carregarAgenda(), carregarAvisos()]);
@@ -326,24 +295,18 @@ async function logout() {
   mostrarToast('Você saiu da conta. Continua como visitante.');
 }
 
-function renderizarSeletorTemas() {
-  const grid = document.getElementById('themeGrid');
-  if (!grid) return;
-
+function sincronizarToggleTema() {
   const temaAtual = carregarTema();
-  grid.innerHTML = TEMAS_DISPONIVEIS.map((tema) => `
-    <button type="button" class="theme-card ${tema.id === temaAtual ? 'active' : ''}"
-            data-theme-select="${tema.id}" aria-pressed="${tema.id === temaAtual}">
-      <span class="theme-card-emoji" aria-hidden="true">${tema.emoji}</span>
-      <strong>${tema.nome}</strong>
-      <span>${tema.descricao}</span>
-    </button>
-  `).join('');
+  const lbl = document.getElementById('themeToggleLbl');
+  const thumb = document.getElementById('themeToggleThumb');
+  const isDark = temaAtual === 'dark';
+  if (lbl) lbl.textContent = isDark ? 'Escuro' : 'Claro';
+  if (thumb) thumb.textContent = isDark ? '🌙' : '☀';
 }
 
 function selecionarTema(temaId) {
   salvarTema(temaId);
-  renderizarSeletorTemas();
+  sincronizarToggleTema();
   mostrarToast('Tema aplicado!');
 }
 
@@ -372,7 +335,6 @@ function nav(pageId) {
       .finally(() => definirCarregamento('listaAvisos', false));
   }
   if (pageId === 'dashboard') atualizarDashboard();
-  if (pageId === 'configuracoes') renderizarSeletorTemas();
 }
 
 function atualizarDashboard() {
@@ -1047,14 +1009,14 @@ function registrarEventos() {
     limparErroLogin();
     abrirModal('modalLogin');
   });
-  document.getElementById('btnConfig').addEventListener('click', () => nav('configuracoes'));
+  document.getElementById('btnThemeToggle').addEventListener('click', () => {
+    selecionarTema(carregarTema() === 'dark' ? 'light' : 'dark');
+  });
   document.getElementById('btnLogout').addEventListener('click', logout);
   document.getElementById('btnSalvarMembro').addEventListener('click', salvarMembro);
   document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
   document.getElementById('btnSalvarAviso').addEventListener('click', salvarAviso);
   document.getElementById('buscaMembro').addEventListener('input', filtrarMembros);
-  document.getElementById('btnAbrirRecuperacao').addEventListener('click', () => abrirModal('modalRecuperacao'));
-  document.getElementById('btnEnviarRecuperacao').addEventListener('click', enviarRecuperacaoSenha);
 
   document.getElementById('btnAdicionarEscala').addEventListener('click', adicionarMembroEscala);
   document.getElementById('btnAddEquipeRow')?.addEventListener('click', () => adicionarLinhaEquipeEvento());
@@ -1127,11 +1089,6 @@ function registrarEventos() {
   document.getElementById('listaAvisos').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-excluir-aviso]');
     if (btn) excluirAviso(Number(btn.dataset.excluirAviso));
-  });
-
-  document.getElementById('themeGrid')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-theme-select]');
-    if (btn) selecionarTema(btn.dataset.themeSelect);
   });
 
   document.addEventListener('keydown', (e) => {

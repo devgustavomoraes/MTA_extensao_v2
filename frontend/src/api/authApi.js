@@ -8,10 +8,3 @@ export function login(email, senha) {
   });
 }
 
-export function recuperarSenha(email) {
-  return apiRequest(endpoints.recuperarSenha, {
-    method: 'POST',
-    body: JSON.stringify({ email })
-  });
-}
-
