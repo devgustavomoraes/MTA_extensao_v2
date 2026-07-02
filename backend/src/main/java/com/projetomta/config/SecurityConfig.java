@@ -46,7 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/eventos/proximos").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/eventos/*/escalas").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/eventos", "/api/eventos/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/avisos", "/api/avisos/*").permitAll()
+                        // 🔒 CORRIGIDO: removido "/api/avisos/*" público — busca por ID não é usada
+                        // pelo frontend e expunha avisos expirados/inativos por enumeração de ID
+                        .requestMatchers(HttpMethod.GET, "/api/avisos").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
