@@ -29,7 +29,9 @@ public class MembroController {
 
     private final MembroService membroService;
 
+    // 🔒 CORRIGIDO: apenas ADMIN pode listar membros (dados sensíveis: nome, email, telefone)
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<MembroResponse>> listar(
             @RequestParam(required = false) String busca,
             @PageableDefault(size = 20, sort = "nomeCompleto", direction = Sort.Direction.ASC) Pageable pageable
@@ -37,7 +39,9 @@ public class MembroController {
         return ResponseEntity.ok(membroService.listar(busca, pageable));
     }
 
+    // 🔒 CORRIGIDO: apenas ADMIN pode buscar membro por ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MembroResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(membroService.buscarPorId(id));
     }
